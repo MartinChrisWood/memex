@@ -1,0 +1,16 @@
+---
+title: "About Ozzy"
+image: "img/inkpunk_12.png"
+about:
+  template: jolla
+  links:
+    - icon: linkedin
+      text: LinkedIn
+      href: https://linkedin.com
+    - icon: github
+      text: Github
+      href: https://github.com
+
+---
+
+About this blog

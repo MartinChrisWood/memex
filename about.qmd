@@ -10,6 +10,6 @@ about:
 
 ---
 
-Ozzy is a technologist currently working in the public sector as a data scientist, with an interest in all things tech, AI and cyberpunk.  His office time is spent applying NLP and NN tools in the field of information retrieval, getting piles of government records and administrative data to talk back to him.  There are also the weird project requests, building tools to figure out where the buses are or what just happened to the jobs market.
+Martin is a technologist currently working in the public sector as a data scientist, with an interest in all things tech, AI and cyberpunk.  His office time is spent applying NLP and NN tools in the field of information retrieval, getting piles of government records and administrative data to talk back to him.  There are also the weird project requests, building tools to figure out where the buses are or what just happened to the jobs market.
 
-His free time is spent playing coop PC games, reading bad sci-fi, hiking, camping, writing bad sci-fi (the least-worst is on here and he's sorry), and doing too many little side projects that look like work.
+His free time is spent playing co-op PC games, reading bad sci-fi, hiking and camping.

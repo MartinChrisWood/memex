@@ -1,0 +1,11 @@
+---
+title: "My Rant"
+author: "Martin Wood"
+date: "2025-01-15"
+categories: [science-fiction]
+draft: true
+---
+
+# AI keeps trying to talk to me
+
+I wish this trend would just give up and die already

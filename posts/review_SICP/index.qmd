@@ -1,43 +1,79 @@
 ---
-title: "Book Review:  Structure and Interpretation of Computer Programs - oh dear lord the maths"
+title: "Book Review:  Structure and Interpretation of Computer Programs"
 author: "Martin Wood"
 date: "2025-04-04"
-categories: [book-review]
-draft: true
+categories: [book review]
+image: "https://mitp-content-server.mit.edu/books/content/sectbyfn/books_pres_0/6515/sicp.zip/graphics/main-banner.gif"
 ---
 
 # SICP; the old school was brutal
 
+Oh dear lord the maths.
+Ok.
+
+### What are you doing?
+
 My current data science office is pretty driven, conveniently one of our number is a very experienced programmer and has offered to help
 guide us through reading [Structure and Interpretation of Computer Programs](https://web.mit.edu/6.001/6.037/sicp.pdf) (a helpful PDF 
-version there).  This book is reportedly a bit special, with a reputation for turning people's brains around and change their view of
-programming!  It's also pretty old, dating from back when people really had to care about what they could fit into memory and how
-performant their algorithms work (as opposed to my Data Science approach of "can I scale it horizontally?  More cores/memory/VM's!").
+version there).
+This book is reportedly a bit special, with a reputation for turning people's brains around and change their view of programming.
+It's also pretty old, dating from back when people really had to care about what they could fit into memory and how performant their
+algorithms were (as opposed to the Data Science approach of "Too slow eh? More cores/memory/VM's/funding!").
 The foreword begins:
 
 > This is the second edition SICP book, from Unofficial Texinfo Format.
 You are probably reading it in an Info hypertext browser, such as the Info mode of Emacs. You might alternatively be reading it
 TEX-formatted on your screen or printer, though that would be silly.
 
-In hindsight this perfectly captured what I was in for.
+In hindsight this perfectly captured what I was in for - created by people who use Emacs and think formatted text is a sign of weakness...
 
 I'm one of the many people who are now kind of reversing into computer science, having used computational tools for data analysis before
 steadily sinking into more sophisticated programming tools as my problems became more complicated and my need to perform shadow IT around
-organisational limitations became more and more pressing...
+organisational limitations became more and more pressing.  I suspect it's a natural consequence of all modern companies accidentally becoming
+IT companies, whether they want to or not.
+
+## How is it going?
 
 Short version:  While the actual text is very readable, the exercises were very much meant for people with a stronger background in maths.
 I studied a natural science, integration was considered a bit fancy.  A lot of the (probably elegant) exercise questions in this book
 involve implementing some equation that would probably make perfect sense to me and be obviously relevant if I hadn't spent my degree
 dripping acid on rocks to see if they fizzed.
 
-As it is I'm left staring at the question wondering if I'm supposed to care or if a "trigonometric identity" might just mean a triangle
-or something?  Ah well.  Thankfully our office's tame wizard is well aware, and is able to help direct us to what we need to know and are
+As it is I was left staring at the question wondering if I'm supposed to care or if a "trigonometric identity" might just mean a triangle
+or something?  Whatever.  Thankfully our office's tame wizard is well aware, and is able to help direct us to what we need to know and are
 meant to be drawing from sections and exercises.  It's also abundantly clear that this is a course textbook, meant to be drawn from by
-a teacher as needed.
+a teacher as needed.  Knowing this is useful both in that it reassures me it's ok to seek help and that I can occasionally skip an
+impenetrably mathematical exercise and lose nothing but knowledge of some weird and unusual number series.  I'm ok with that.
 
-Happily, the book is very much still worth working through - there's enough redundancy in the exercises that I can find one or two that'll
-teach me something relevant and get the core message!  And who cares if I miss a chunk?  It's still progress, and it still leaves me
-knowing some more of the terminology and concepts I feel I've missed in my backwards slide into working with computers.  I'm also not sure
-if I'm meant to be doing every exercise anyway, it's a textbook from which an instructor is meant to pick and choose after all.  A goal
-of mine is to steadily work through the curriculum set out by [Teach Yourself Computer Science](https://teachyourselfcs.com/), which
-suggests getting through chapters 1 - 3 including exercises. 
+The book is very much still worth working through - it leaves me knowing some more of the terminology and concepts I feel I've missed
+in my backwards slide into working with computers.
+A goal of mine is to steadily work through the curriculum set out by [Teach Yourself Computer Science](https://teachyourselfcs.com/), which
+suggests getting through chapters 1 - 3 including exercises.
+
+## So what do you think you're learning?
+
+Having only just reached the end of Chapter 1, I've picked up lots of basics, but in more clearly defined detail than I've previously owned
+them.  For example, the book has gone into some detail on recursive and iterative algorithms, and how they are executed by the interpreter.
+Terminology I didn't know I needed has been clarified, like the difference between a recursive [REF ALGORITHM?] and a recursive process.
+
+The insight into what interpreters think of/about the code I write, and the numerous illustrations of how execution of a more complex
+program folds out into a tree-like structure of executed primitive operations, are both giving me a view of how computers work that I may
+have seen before but is now far more explicit, and stands in attractive contrast to the many hands-on high level tutorials on applications
+of programming to things like data analysis that pay little attention to what is going on below the level of Pandas' methods.
+
+And of course, now I know some Scheme!  I have to admit its simplicity and lack of too much syntactic sugar (see, I know bigger words now!)
+make it a very nice language for demonstrating how the interpreter works through the instructions you're feeding it. And being forced
+to be conscious of all those nested brackets assists your awareness of execution order.
+
+## Practical notes
+
+I'm using [Racket](https://racket-lang.org/), a descendant of scheme that I chose purely because I could easily download and install it on
+my Windows laptop, so that I could learn offline on trains (welcome to the North of England, we don't trust in pervasive internet up here).
+I've been using that in conjunction with [the PDF version of the book from MIT](https://web.mit.edu/6.001/6.037/sicp.pdf), because I'm old
+so I like that it looks like a textbook that way.
+
+I know others working through the book have been using online implementations of Scheme for simplicity and because our work laptops won't
+trust us to install things, here's one if you need it:  [try.scheme.org](https://try.scheme.org/).
+
+For myself, so far I've been copy-pasting code snippets over from the book and my notes like a pleb.  In all of chapter 1, only once was I working on
+a compound procedure (big words again!  Read: a small program with multiple functions) where I felt like using an IDE properly might help :P

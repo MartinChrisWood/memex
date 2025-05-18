@@ -50,16 +50,22 @@ in my backwards slide into working with computers.
 A goal of mine is to steadily work through the curriculum set out by [Teach Yourself Computer Science](https://teachyourselfcs.com/), which
 suggests getting through chapters 1 - 3 including exercises.
 
-## So what do you think you're learning?
+## What do you think you're learning?
 
 Having only just reached the end of Chapter 1, I've picked up lots of basics, but in more clearly defined detail than I've previously owned
-them.  For example, the book has gone into some detail on recursive and iterative algorithms, and how they are executed by the interpreter.
-Terminology I didn't know I needed has been clarified, like the difference between a recursive [REF ALGORITHM?] and a recursive process.
+them.  For example, the book has gone into detail on recursive vs iterative algorithms, and how to map from one to the other,
+and how they are executed by the interpreter.
+Terminology I didn't know I needed or thought I understood from general knowledge has been clarified as something more specific in CS (Computer Science),
+like the difference between a recursive algorithm and a recursive process.
 
 The insight into what interpreters think of/about the code I write, and the numerous illustrations of how execution of a more complex
 program folds out into a tree-like structure of executed primitive operations, are both giving me a view of how computers work that I may
 have seen before but is now far more explicit, and stands in attractive contrast to the many hands-on high level tutorials on applications
 of programming to things like data analysis that pay little attention to what is going on below the level of Pandas' methods.
+
+At a higher level, there's also been some good discussion and examples in the book of proper abstraction; building procedures to perform
+specific, higher level tasks that are clear and focussed enough that once defined, you can use those without ever needing to reconsider
+their internal workings.  Abstraction and modular code are ideas that'll be old-hat to most people, but the
 
 And of course, now I know some Scheme!  I have to admit its simplicity and lack of too much syntactic sugar (see, I know bigger words now!)
 make it a very nice language for demonstrating how the interpreter works through the instructions you're feeding it. And being forced
@@ -77,3 +83,14 @@ trust us to install things, here's one if you need it:  [try.scheme.org](https:/
 
 For myself, so far I've been copy-pasting code snippets over from the book and my notes like a pleb.  In all of chapter 1, only once was I working on
 a compound procedure (big words again!  Read: a small program with multiple functions) where I felt like using an IDE properly might help :P
+
+## How might this be useful?
+
+It's rare that my work either as a data scientist or as a data engineer has required CS knowledge - but on occassion, every
+few months or so, I find myself having to write something that is effectively performing a tree search to dig through weirdly stored logs.
+Or I need to perform matrix multiplication to create a speedier version of some geographic operation that geopandas takes hours on.
+On these weird issues I need to do actual programming and this book is good instruction and practice fodder for that.
+
+I know I've got a lot to learn on how to actually structure a project, at every level.  A better understanding of how to abstract code, and
+when to do so, will be useful as I move to a few larger projects.  At a fine level, learning more about the proper use of lexical scope
+and computational complexity will let me write clearer, simpler code that won't hit "that won't scale" gotcha's.

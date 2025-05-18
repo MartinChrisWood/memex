@@ -1,7 +1,7 @@
 ---
 title: "Welcome To My Blog"
 author: "Martin Wood"
-date: "2025-05-01"
+date: "2025-01-01"
 categories: [news]
 ---
 

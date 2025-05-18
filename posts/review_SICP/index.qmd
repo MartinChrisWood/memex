@@ -8,6 +8,8 @@ image: "https://mitp-content-server.mit.edu/books/content/sectbyfn/books_pres_0/
 
 # SICP; the old school was brutal
 
+![](https://mitp-content-server.mit.edu/books/content/sectbyfn/books_pres_0/6515/sicp.zip/graphics/main-banner.gif)
+
 Oh dear lord the maths.
 Ok.
 

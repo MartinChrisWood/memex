@@ -8,6 +8,10 @@ image: "https://jeroenjanssens.com/dsatcl/images/cover-small.png"
 
 ## The book
 
+![](https://jeroenjanssens.com/dsatcl/images/cover-small.png)
+
+[Available free to read online here](https://jeroenjanssens.com/dsatcl/)
+
 Basics of building data pipelines using command line tools.
 On the basics the book goes into a little detail on the difference between binary executables
 (machine code), shell builtin's (like `ls` or `pwd`, interpreted scripts (writing things in python or other languages), shell functions
@@ -33,7 +37,7 @@ Home Alone
 
 First line of a script is what defines what executes it, eg for bash, R and Python respectively;
 
-```
+```bash
 #!/bin/bash
 #!/usr/bin/env Rscript
 #!/usr/bin/env python3

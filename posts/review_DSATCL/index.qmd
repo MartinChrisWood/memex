@@ -10,12 +10,12 @@ image: "https://jeroenjanssens.com/dsatcl/images/cover-small.png"
 
 ![](https://jeroenjanssens.com/dsatcl/images/cover-small.png)
 
-[Available free to read online here](https://jeroenjanssens.com/dsatcl/)
-
 Basics of building data pipelines using command line tools.
 On the basics the book goes into a little detail on the difference between binary executables
 (machine code), shell builtin's (like `ls` or `pwd`, interpreted scripts (writing things in python or other languages), shell functions
-and aliases.  
+and aliases.
+
+[Available free to read online here](https://jeroenjanssens.com/dsatcl/)
 
 Book mostly focusses on interpreted scripts, shell functions and aliases, used to compose our own commandline tools and workflows.
 

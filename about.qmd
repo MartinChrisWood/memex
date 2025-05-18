@@ -1,15 +1,22 @@
 ---
-title: "About Ozzy"
+title: "About Martin"
 image: "img/inkpunk_12.png"
 about:
   template: jolla
   links:
     - icon: github
       text: Github
-      href: https://github.com/OzwaldCavendish
-
+      href: https://github.com/MartinChrisWood
+    - icon: linkedin
+      text: Linkedin
+      href: https://www.linkedin.com/in/martin-wood-822655288/
 ---
 
-Martin is a technologist currently working in the public sector as a data scientist, with an interest in all things tech, AI and cyberpunk.  His office time is spent applying NLP and NN tools in the field of information retrieval, getting piles of government records and administrative data to talk back to him.  There are also the weird project requests, building tools to figure out where the buses are or what just happened to the jobs market.
+Martin is a "technologist" currently working in the public sector as a data scientist, with an interest in all things tech, AI and cyberpunk!
+His office time is spent applying NLP and LLM tools in the field of information retrieval, getting piles of government records and
+administrative data to talk back to him.  There's a side of dashboarding (RShiny), Pythonic web development (Flask) 
+and the occasional foray into the Azure ecosystem.  Currently there's a lot of data processing and statistics (R).
+
+There are also the weird project requests, building tools to figure out where the buses are, or what just happened to the jobs market.
 
 His free time is spent playing co-op PC games, reading bad sci-fi, hiking and camping.

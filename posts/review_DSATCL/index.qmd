@@ -1,0 +1,123 @@
+---
+title: "Book Notes:  Data Science at the Command Line"
+author: "Martin Wood"
+date: "2025-05-18"
+categories: [book review]
+image: "https://jeroenjanssens.com/dsatcl/images/cover-small.png"
+---
+
+## The book
+
+![](https://jeroenjanssens.com/dsatcl/images/cover-small.png)
+
+Basics of building data pipelines using command line tools.
+On the basics the book goes into a little detail on the difference between binary executables
+(machine code), shell builtin's (like `ls` or `pwd`, interpreted scripts (writing things in python or other languages), shell functions
+and aliases.
+
+[Available free to read online here](https://jeroenjanssens.com/dsatcl/)
+
+Book mostly focusses on interpreted scripts, shell functions and aliases, used to compose our own commandline tools and workflows.
+
+I'm using [wsl2](https://learn.microsoft.com/en-us/windows/wsl/install) to run these things, using the list of command line tools at the
+end of the book to find out what to install, because it's useful to see what I need to do to get it running on other machines.
+But the docker image is pretty easy to set up as a speedier way to start!  Honestly, it uses so many installed extras that I would recommend
+the docker route in hindsight.
+
+Explains how to pipe these together, which was handy for me because a) suddenly what R tidyverse is trying to do makes more sense and b)
+a lot of little commands in the scriptier or base parts of Python and R suddenly make far more sense!  Eg; grepl in R from the `grep`
+builtin (is it builtin?), `head`...
+
+```bash
+$ head -n 3 movies.txt
+Matrix
+Star Wars
+Home Alone
+```
+
+First line of a script is what defines what executes it, eg for bash, R and Python respectively;
+
+```bash
+#!/bin/bash
+#!/usr/bin/env Rscript
+#!/usr/bin/env python3
+```
+
+## Tools
+
+The Unix philosophy (Art of Unix Programming is a great text). Then pipe between those (good, focussed) tools.
+Based on management of stdin, stdout, stderr.
+If you really need an example of this, type `rev` and play around.
+
+A very short  example, counting the number of chapters in Adventures in Wonderland (including downloading with curl)
+```bash
+$ curl -s "https://www.gutenberg.org/files/11/11-0.txt" |
+> grep " CHAPTER" |
+> wc -l
+12
+```
+
+(And use `>` and `>>` to output to a file if you want, or read from those files with `cat`).
+
+`2>` redirects the error messages to files, used this in Data Engineering at least once while debugging something long-running in an
+inadvisably hands-on manner in Azure.
+
+Lots of the tools used are actually non-standard bits created by Jeronen or others - though that these can be created, distributed
+and reused so easily is kind of the point. [Jeroen's own tools - dsutls](https://github.com/jeroenjanssens/dsutils)
+
+### Handy bit for installing the tools I've been playing with:
+
+```bash
+sudo apt install cowsay rust-bat moreutils csvkit
+```
+
+Some things I've found super useful:  csvlook/csv2md, batcat (in book as "bat" but there's a name clash when I install on 24.04),
+tee for pushing out intermediate results.  And of course, I always forget "man" is an option because we have the internet now...
+and it turns out I can press "/" to search these pages!  Probably other things that open in this reader mode!
+jq super useful when dealing with web data/API's/config files.  Literally never heard of the `tldr` command...
+
+`csvlook -I` prevents type inference and formatting eg; of numbers (interpreted years as numbers and added thousand commas without this).
+
+- csvgrep for searching/filtering csv
+- jq for working through json keys
+
+```bash
+$ < wikimedia-stream-sample sed -n 's/^data: //p' |
+> jq 'select(.type == "edit" and .server_name == "en.wikipedia.org") | .title'
+```
+
+
+## Making scripts
+
+For example, here's a surprisingly sophisticated bash script:
+
+[See this page](https://jeroenjanssens.com/dsatcl/chapter-4-creating-command-line-tools)
+
+```bash
+curl -sL "https://www.gutenberg.org/files/11/11-0.txt" |
+> tr '[:upper:]' '[:lower:]' |
+> grep -oE "[a-z\']{2,}" |
+> sort |
+> uniq -c |
+> sort -nr |
+> head -n 10
+```
+
+Just start writing your commands, if no input is defined in your script, will take from stdin, which means you can pipe stuff at it.
+Defining arguments is simple too.  Names them rather than using directly for readability.
+
+[See example here](https://jeroenjanssens.com/dsatcl/chapter-4-creating-command-line-tools#step-5-add-arguments)
+
+## Documentation and security
+
+It mentions [docopt](http://docopt.org/) as a tool for adding help docs?  Should look in to that.
+Also [ShellCheck](https://www.shellcheck.net/) for scanning bash code for issues/vulnerabilities.
+
+
+## Thoughts
+- Book is mostly useful for learning bash/shell/zsh/unix if you don't know it already, that's me for sure, probably not essential.  Also, the command line is absolutely the kind of thing that's so well documented that AI will be brilliant at it but who cares about that.
+- I like that he's fairly casual about not explaining every flag, command and use in the book, you need to go look things up if you want details and that's always a good learning mechanism.
+- There are definitely tools in here I'm going to abuse - curl, weirdly, I just find more elegant than messing with python requests, and coupled with jq and csv type tools I can write something that'll just work in a lot of places (read: VM's in Azure) without having to mess around with venv.  I also love being able to turn csv into markdown tables though I bet that exists inside Python!
+- I like that he uses Nano, I know clever editors based on keyboards and nothing but keyboards exist, and I will never have time to care.  Actual typing is not the least efficient part of my day.
+- I notice also that for applications for which tools already exist, the python version is more verbose (albeit possibly more readable?  I'm not confident on that)
+- The continuous allowance for streaming data is really interesting also, not something I've ever had to consider as a "research" data scientist

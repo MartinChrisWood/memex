@@ -7,9 +7,9 @@ website:
     right:
       - about.qmd
       - icon: github
-        href: https://github.com/OzwaldCavendish
+        href: https://github.com/MartinChrisWood
       - icon: linkedin
-        href: https://linkedin.com
+        href: https://www.linkedin.com/in/martin-wood-822655288/
 format:
   html:
     theme: vapor

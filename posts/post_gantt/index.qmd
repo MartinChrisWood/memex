@@ -1,0 +1,95 @@
+---
+title: "Making a Gantt Chart in Python"
+author: "Martin Wood"
+date: "2025-05-18"
+categories: [book review]
+image: ""
+draft: True
+---
+
+## What?
+
+Python code for generating Gantt Charts, pretty ones, in Plotly.
+
+Read the original Plotly examples if you want to get started marginally quicker, and to see more examples of variants of these plots.
+Read mine for discussion of a few other options, some extra plotly arguments and a slightly more complete pile of code at the end.
+
+
+## Why?
+
+Gantt charts are boring and I dislike excel intensely so I'm going to build this instead.
+This is probably not the best approach.  The best approach would be something that integrates with Jira or your DevOps stuff.
+
+A second best approach would be dedicated software, there seem to be a lot of free Gantt chart generators available, I've used the
+ugly but standalone (and free) [GanttProject](https://www.ganttproject.biz/) before, which nicely handles dependencies between tasks
+and produces functional output.  It's a good quick option.
+
+But if I build it in Python I will have a tool I can easily point at different underlying data for
+each project I need one for.  Plus Plotly gives me scalable html output with mouseover text, which is pretty handy when there's a
+lot of optional context to tasks.
+
+
+## How?
+
+Python, Pandas and Plotly.  The project has two logical components; creating a suitable dataframe representation of the tasks to
+be completed, and plotting that. Simple!
+Credit to [this Plotly guide](https://plotly.com/python/gantt/) for providing the code I'm going to adapt.
+The main change I need is the ability to visualise dependencies between tasks.
+
+
+## Creating the data
+
+Script expects a csv file with columns to describe the tasks and their start and end dates.
+I've added one for dependencies, but it's just a text column that gets displayed really.
+
+TBC
+
+
+## Plotting using plotly express's [timeline]() method
+
+```python
+import plotly.express as px
+import plotly.graph_objects as go
+
+import numpy as np
+import pandas as pd
+
+from dash import Dash, dcc, html
+
+
+# Load the data (see section above)
+df = pd.read_csv("example_tasks.csv", dtype=str)
+
+# Create the labelling for the task blocks (I want to see task dependencies)
+df['Labelling'] = np.where(
+    df['Dependencies'].isnull(),
+    df['Task'],
+    df['Task'] + ", Dependencies: " + df["Dependencies"]
+)
+
+# Order as I want plotted
+df = df.sort_values("Start", ascending=False)
+
+# Plot
+fig = px.timeline(
+    df,
+    x_start="Start",
+    x_end="Finish",
+    y="Task",
+    color="Resource",
+    text="Labelling",
+    hover_name="Resource",
+    hover_data={"Resource": False, "Start": True, "Finish": True, "Labelling": False}
+)
+
+# Wraps Dash around the plot
+fig = go.Figure(fig)
+
+# Dash stuff, create the app and start it
+app = Dash()
+app.layout = html.Div([
+    dcc.Graph(figure=fig)
+])
+
+app.run_server(debug=True, use_reloader=True)
+```

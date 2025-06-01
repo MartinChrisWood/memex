@@ -2,22 +2,26 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://MartinChrisWood.github.io/memex/posts/welcome/index.html</loc>
-    <lastmod>2025-05-18T18:05:03.402Z</lastmod>
+    <lastmod>2025-06-01T15:37:48.426Z</lastmod>
   </url>
   <url>
     <loc>https://MartinChrisWood.github.io/memex/posts/review_DSATCL/index.html</loc>
-    <lastmod>2025-05-18T18:05:03.396Z</lastmod>
-  </url>
-  <url>
-    <loc>https://MartinChrisWood.github.io/memex/about.html</loc>
-    <lastmod>2025-05-18T18:05:03.325Z</lastmod>
+    <lastmod>2025-06-01T15:37:48.422Z</lastmod>
   </url>
   <url>
     <loc>https://MartinChrisWood.github.io/memex/index.html</loc>
     <lastmod>2025-05-18T18:05:03.388Z</lastmod>
   </url>
   <url>
+    <loc>https://MartinChrisWood.github.io/memex/about.html</loc>
+    <lastmod>2025-05-18T18:05:03.325Z</lastmod>
+  </url>
+  <url>
+    <loc>https://MartinChrisWood.github.io/memex/posts/post_gantt/index.html</loc>
+    <lastmod>2025-06-01T15:37:48.422Z</lastmod>
+  </url>
+  <url>
     <loc>https://MartinChrisWood.github.io/memex/posts/review_SICP/index.html</loc>
-    <lastmod>2025-05-18T18:05:03.399Z</lastmod>
+    <lastmod>2025-06-01T15:37:48.424Z</lastmod>
   </url>
 </urlset>

@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Martin Wood">
-<meta name="dcterms.date" content="2025-04-04">
+<meta name="dcterms.date" content="2025-05-18">
 
-<title>Book Notes: Structure and Interpretation of Computer Programs – memex</title>
+<title>Making a Gantt Chart in Python – memex</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +21,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -116,9 +151,9 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Book Notes: Structure and Interpretation of Computer Programs</h1>
+      <h1 class="title">Making a Gantt Chart in Python</h1>
                                 <div class="quarto-categories">
-                <div class="quarto-category">book notes</div>
+                <div class="quarto-category">snippet</div>
               </div>
                   </div>
   </div>
@@ -136,7 +171,7 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">April 4, 2025</p>
+        <p class="date">May 18, 2025</p>
       </div>
     </div>
     
@@ -155,50 +190,115 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<section id="sicp-the-old-school-was-brutal" class="level1">
-<h1>SICP; the old school was brutal</h1>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://mitp-content-server.mit.edu/books/content/sectbyfn/books_pres_0/6515/sicp.zip/graphics/main-banner.gif" class="img-fluid figure-img"></p>
-<figcaption>Cover art for book, Structure and Interpretation of Computer Programs</figcaption>
-</figure>
-</div>
-<p>Oh dear lord the maths.</p>
 <section id="what" class="level2">
 <h2 class="anchored" data-anchor-id="what">What?</h2>
-<p>My current data science office is pretty driven, conveniently one of our number is a very experienced programmer and has offered to help guide us through reading <a href="https://web.mit.edu/6.001/6.037/sicp.pdf">Structure and Interpretation of Computer Programs</a> (a helpful PDF version there). This book is reportedly a bit special, with a reputation for turning people’s brains around and change their view of programming. It’s also pretty old, dating from back when people really had to care about what they could fit into memory and how performant their algorithms were (as opposed to the Data Science approach of “Too slow eh? More cores/memory/VM’s/funding!”). The foreword begins:</p>
-<blockquote class="blockquote">
-<p>This is the second edition SICP book, from Unofficial Texinfo Format. You are probably reading it in an Info hypertext browser, such as the Info mode of Emacs. You might alternatively be reading it TEX-formatted on your screen or printer, though that would be silly.</p>
-</blockquote>
-<p>In hindsight this perfectly captured what I was in for - created by people who use Emacs and think formatted text is a sign of weakness…</p>
-<p>I’m one of the many people who are now kind of reversing into computer science, having used computational tools for data analysis before steadily sinking into more sophisticated programming tools as my problems became more complicated and my need to perform shadow IT around organisational limitations became more and more pressing. I suspect it’s a natural consequence of all modern companies accidentally becoming IT companies, whether they want to or not.</p>
+<p>Code for generating Gantt Charts, pretty ones, in Plotly.</p>
+<p>Read the original Plotly examples if you want to get started marginally quicker, and to see more examples of variants of these plots. Mines got some extra plotly arguments and a <em>marginally</em> more complete pile of code at the end.</p>
+<p>Uses Python, Pandas and Plotly. The project has two logical components; creating a suitable dataframe representation of the tasks to be completed, and plotting that. Simple! Credit to <a href="https://plotly.com/python/gantt/">this Plotly guide</a> for providing all the code I’m going to adapt. The only real change I need is the ability to visualise dependencies between tasks.</p>
+<p><a href="https://github.com/MartinChrisWood/ganttinize">My repo for this</a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="example_gantt.png" class="img-fluid figure-img"></p>
+<figcaption>Example Gantt chart visualisation</figcaption>
+</figure>
+</div>
 </section>
-<section id="how-is-it-going" class="level2">
-<h2 class="anchored" data-anchor-id="how-is-it-going">How is it going?</h2>
-<p>Short version: While the actual text is very readable, the exercises were very much meant for people with a stronger background in maths. I studied a natural science, integration was considered a bit fancy. A lot of the (probably elegant) exercise questions in this book involve implementing some equation that would probably make perfect sense to me and be obviously relevant if I hadn’t spent my degree dripping acid on rocks to see if they fizzed.</p>
-<p>As it is I was left staring at the question wondering if I’m supposed to care or if a “trigonometric identity” might just mean a triangle or something? Whatever. Thankfully our office’s tame wizard is well aware, and is able to help direct us to what we need to know and are meant to be drawing from sections and exercises. It’s also abundantly clear that this is a course textbook, meant to be drawn from by a teacher as needed. Knowing this is useful both in that it reassures me it’s ok to seek help and that I can occasionally skip an impenetrably mathematical exercise and lose nothing but knowledge of some weird and unusual number series. I’m ok with that.</p>
-<p>The book is very much still worth working through - it leaves me knowing some more of the terminology and concepts I feel I’ve missed in my backwards slide into working with computers. A goal of mine is to steadily work through the curriculum set out by <a href="https://teachyourselfcs.com/">Teach Yourself Computer Science</a>, which suggests getting through chapters 1 - 3 including exercises.</p>
+<section id="why" class="level2">
+<h2 class="anchored" data-anchor-id="why">Why?</h2>
+<p>Gantt charts are boring and I dislike excel intensely so I’m going to build this instead. This is probably <strong>not</strong> the best approach. The best approach would be something that integrates with your DevOps platform, but I don’t know any and am not currently working with one ;)</p>
+<p>A second best approach would be dedicated software, there seem to be a lot of free Gantt chart generators available. I’ve used the ugly but standalone (and free) <a href="https://www.ganttproject.biz/">GanttProject</a> before, which nicely handles dependencies between tasks and produces functional output. It’s a good quick option.</p>
+<p>But if I build it in Python I will have a tool I can easily point at different underlying data for each project I need one for. Plus Plotly gives me scalable html output with mouseover text, which is pretty handy when there’s a lot of optional context to tasks.</p>
 </section>
-<section id="what-are-you-learning" class="level2">
-<h2 class="anchored" data-anchor-id="what-are-you-learning">What are you learning?</h2>
-<p>Having only just reached the end of Chapter 1, I’ve picked up lots of basics, but in more clearly defined detail than I’ve previously owned them. For example, the book has gone into detail on recursive vs iterative algorithms, and how to map from one to the other, and how they are executed by the interpreter. Terminology I didn’t know I needed or thought I understood from general knowledge has been clarified as something more specific in CS (Computer Science), like the difference between a recursive algorithm and a recursive process.</p>
-<p>The insight into what interpreters think of/about the code I write, and the numerous illustrations of how execution of a more complex program folds out into a tree-like structure of executed primitive operations, are both giving me a view of how computers work that I may have seen before but is now far more explicit, and stands in attractive contrast to the many hands-on high level tutorials on applications of programming to things like data analysis that pay little attention to what is going on below the level of Pandas’ methods.</p>
-<p>At a higher level, there’s also been some good discussion and examples in the book of proper abstraction; building procedures to perform specific, higher level tasks that are clear and focussed enough that once defined, you can use those without ever needing to reconsider their internal workings. Abstraction and modular code are ideas that’ll be old-hat to most people, but the</p>
-<p>And of course, now I know some Scheme! I have to admit its simplicity and lack of too much syntactic sugar (see, I know bigger words now!) make it a very nice language for demonstrating how the interpreter works through the instructions you’re feeding it. And being forced to be conscious of all those nested brackets assists your awareness of execution order.</p>
+<section id="creating-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="creating-the-data">Creating the data</h2>
+<p>Script expects a csv file with columns to describe the tasks and their start and end dates. I’ve added one for dependencies, but it’s just a text column that gets displayed really.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Task</th>
+<th>Start</th>
+<th>Finish</th>
+<th>Dependencies</th>
+<th>Resource</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>“Job A”</td>
+<td>‘2025-06-01’</td>
+<td>‘2025-08-20’</td>
+<td></td>
+<td>Bill</td>
+</tr>
+<tr class="even">
+<td>“Job B”</td>
+<td>‘2025-08-20’</td>
+<td>‘2025-11-28’</td>
+<td>‘Job A’</td>
+<td>Ben</td>
+</tr>
+<tr class="odd">
+<td>“Job C”</td>
+<td>‘2025-09-28’</td>
+<td>‘2025-11-28’</td>
+<td>‘Job A’</td>
+<td>Bill</td>
+</tr>
+<tr class="even">
+<td>Job D”</td>
+<td>‘2025-12-01’</td>
+<td>‘2026-01-28’</td>
+<td>‘Job B’</td>
+<td>Bill</td>
+</tr>
+<tr class="odd">
+<td>“Job E”</td>
+<td>‘2025-12-01’</td>
+<td>‘2026-01-28’</td>
+<td>‘Job C’</td>
+<td>Ben</td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="practical-notes" class="level2">
-<h2 class="anchored" data-anchor-id="practical-notes">Practical notes</h2>
-<p>I’m using <a href="https://racket-lang.org/">Racket</a>, a descendant of scheme that I chose purely because I could easily download and install it on my Windows laptop, so that I could learn offline on trains (welcome to the North of England, we don’t trust in pervasive internet up here). I’ve been using that in conjunction with <a href="https://web.mit.edu/6.001/6.037/sicp.pdf">the PDF version of the book from MIT</a>, because I’m old so I like that it looks like a textbook that way.</p>
-<p>I know others working through the book have been using online implementations of Scheme for simplicity and because our work laptops won’t trust us to install things, here’s one if you need it: <a href="https://try.scheme.org/">try.scheme.org</a>.</p>
-<p>For myself, so far I’ve been copy-pasting code snippets over from the book and my notes like a pleb. In all of chapter 1, only once was I working on a compound procedure (big words again! Read: a small program with multiple functions) where I felt like using an IDE properly might help :P</p>
-</section>
-<section id="why-care" class="level2">
-<h2 class="anchored" data-anchor-id="why-care">Why care?</h2>
-<p>It’s rare that my work either as a data scientist or as a data engineer has required CS knowledge - but on occassion, every few months or so, I find myself having to write something that is effectively performing a tree search to dig through weirdly stored logs. Or I need to perform matrix multiplication to create a speedier version of some geographic operation that geopandas takes hours on. On these weird issues I need to do actual programming and this book is good instruction and practice fodder for that.</p>
-<p>I know I’ve got a lot to learn on how to actually structure a project, at every level. A better understanding of how to abstract code, and when to do so, will be useful as I move to a few larger projects. At a fine level, learning more about the proper use of lexical scope and computational complexity will let me write clearer, simpler code that won’t hit “that won’t scale” gotcha’s.</p>
+<section id="plotting-using-plotly-expresss-timeline-method" class="level2">
+<h2 class="anchored" data-anchor-id="plotting-using-plotly-expresss-timeline-method">Plotting using plotly express’s <a href="">timeline</a> method</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.express <span class="im">as</span> px</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.graph_objects <span class="im">as</span> go</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the data (see section above)</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"example.csv"</span>, dtype<span class="op">=</span><span class="bu">str</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the labelling for the task blocks (I want to see task dependencies)</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Labelling'</span>] <span class="op">=</span> np.where(</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">'Dependencies'</span>].isnull(),</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">'Task'</span>],</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">'Task'</span>] <span class="op">+</span> <span class="st">", Dependencies: "</span> <span class="op">+</span> df[<span class="st">"Dependencies"</span>]</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Order as I want plotted</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.sort_values(<span class="st">"Start"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> px.timeline(</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    df,</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    x_start<span class="op">=</span><span class="st">"Start"</span>,</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    x_end<span class="op">=</span><span class="st">"Finish"</span>,</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">"Task"</span>,</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="st">"Resource"</span>,</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    text<span class="op">=</span><span class="st">"Labelling"</span>,</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    hover_name<span class="op">=</span><span class="st">"Resource"</span>,</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    hover_data<span class="op">=</span>{<span class="st">"Resource"</span>: <span class="va">False</span>, <span class="st">"Start"</span>: <span class="va">True</span>, <span class="st">"Finish"</span>: <span class="va">True</span>, <span class="st">"Labelling"</span>: <span class="va">False</span>},</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Gantt Chart"</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

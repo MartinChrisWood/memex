@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/post_gantt/index.html",
       "/posts/review_DSATCL/index.html",
       "/posts/review_SICP/index.html",
       "/posts/welcome/index.html"

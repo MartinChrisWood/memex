@@ -1,8 +1,8 @@
 ---
-title: "Book Review:  Structure and Interpretation of Computer Programs"
+title: "Book Notes:  Structure and Interpretation of Computer Programs"
 author: "Martin Wood"
 date: "2025-04-04"
-categories: [book review]
+categories: [book notes]
 image: "https://mitp-content-server.mit.edu/books/content/sectbyfn/books_pres_0/6515/sicp.zip/graphics/main-banner.gif"
 ---
 

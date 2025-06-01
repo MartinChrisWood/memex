@@ -1,19 +1,18 @@
 ---
-title: "Book Review:  Structure and Interpretation of Computer Programs"
+title: "Book Notes:  Structure and Interpretation of Computer Programs"
 author: "Martin Wood"
 date: "2025-04-04"
-categories: [book review]
+categories: [book notes]
 image: "https://mitp-content-server.mit.edu/books/content/sectbyfn/books_pres_0/6515/sicp.zip/graphics/main-banner.gif"
 ---
 
 # SICP; the old school was brutal
 
-![](https://mitp-content-server.mit.edu/books/content/sectbyfn/books_pres_0/6515/sicp.zip/graphics/main-banner.gif)
+![Cover art for book, Structure and Interpretation of Computer Programs](https://mitp-content-server.mit.edu/books/content/sectbyfn/books_pres_0/6515/sicp.zip/graphics/main-banner.gif)
 
 Oh dear lord the maths.
-Ok.
 
-## What are you doing?
+## What?
 
 My current data science office is pretty driven, conveniently one of our number is a very experienced programmer and has offered to help
 guide us through reading [Structure and Interpretation of Computer Programs](https://web.mit.edu/6.001/6.037/sicp.pdf) (a helpful PDF 
@@ -52,7 +51,7 @@ in my backwards slide into working with computers.
 A goal of mine is to steadily work through the curriculum set out by [Teach Yourself Computer Science](https://teachyourselfcs.com/), which
 suggests getting through chapters 1 - 3 including exercises.
 
-## What do you think you're learning?
+## What are you learning?
 
 Having only just reached the end of Chapter 1, I've picked up lots of basics, but in more clearly defined detail than I've previously owned
 them.  For example, the book has gone into detail on recursive vs iterative algorithms, and how to map from one to the other,
@@ -86,7 +85,7 @@ trust us to install things, here's one if you need it:  [try.scheme.org](https:/
 For myself, so far I've been copy-pasting code snippets over from the book and my notes like a pleb.  In all of chapter 1, only once was I working on
 a compound procedure (big words again!  Read: a small program with multiple functions) where I felt like using an IDE properly might help :P
 
-## How might this be useful?
+## Why care?
 
 It's rare that my work either as a data scientist or as a data engineer has required CS knowledge - but on occassion, every
 few months or so, I find myself having to write something that is effectively performing a tree search to dig through weirdly stored logs.

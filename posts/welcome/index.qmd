@@ -8,3 +8,17 @@ categories: [news]
 And so I've stolen the example/template post.  Anyway, intending to use this to record bits and pieces of what I learn, mostly for my sake.
 
 ![](thumbnail.jpg)
+
+## Made with Quarto
+
+[Download Quarto](https://quarto.org/docs/download/index.html)
+
+[Quarto (blog) guidance](https://quarto.org/docs/websites/website-blog.html)
+
+[Github pages guidance](https://quarto.org/docs/publishing/github-pages.html)
+
+```bash
+quarto render
+quarto publish
+```
+

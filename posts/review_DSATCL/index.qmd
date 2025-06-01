@@ -2,7 +2,7 @@
 title: "Book Notes:  Data Science at the Command Line"
 author: "Martin Wood"
 date: "2025-05-18"
-categories: [book review]
+categories: [book notes]
 image: "https://jeroenjanssens.com/dsatcl/images/cover-small.png"
 ---
 

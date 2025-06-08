@@ -1,0 +1,161 @@
+---
+title: "Quality Assurance of Analysis in R"
+author: "Martin Wood"
+date: "2025-06-08"
+categories: [snippet]
+image: ""
+draft: True
+---
+
+## What does a person I actually test?  Some background on why this post exists
+
+I perform a lot of one-shot analysis.
+The code ends up being either a few complicated scripts or a simple and dedicated program, dependent on which way round you want to view something very single-purpose that takes specifically formatted csv files as inputs :P
+A person can end up doing a lot of weird maths in a small number of lines, and the information is often being used to make important decisions in a hurry, so those numbers need to be ironclad.
+There is guidance available on what a QA process should look like at a high level; who should be involved, how to record it and what sign-off looks like, in the famous (kind of, in Gov circles, don't judge me...) [Aqua Book](https://www.gov.uk/government/publications/the-aqua-book-guidance-on-producing-quality-analysis-for-government).
+
+My issue with this is it's high level and software agnostic; it doesn't demonstrate what to check or how, and I need to somehow turn that into actual code that passes or fails my crap.
+This is a shame when analysts are more and more moving towards R rather than Excel, where writing quality/data tests almost in the style of unit tests or end-to-end tests should be possible, and is an obvious safeguard for any analysis that may one day require replication.
+
+**Not a new problem though!  Others got to this long before me.  This post records some methods and guides I've turfed up on what to actually do in building something.**
+
+## But first, if you want to do it properly
+
+A far more comprehensive guide for analysts to writing and structuring reproducible, QA'able code, including information on how to peer review code, is available in [the Duck Book](https://best-practice-and-impact.github.io/qa-of-code-guidance/intro.html), created by the Office for National Statistics.  Includes helpful guides to matters like setting up YAML files for readable experiment configuration files.
+
+![Duck Book logo, extremely cool](https://best-practice-and-impact.github.io/qa-of-code-guidance/_static/duck_book_logo.svg)
+
+Another interesting looking book is the [Researcher Programming Resources](https://rse.shef.ac.uk/training/programming) - From the University of Sheffield, covering best practices in R, Python and Matlab ("now, that's a name I've not heard in a long time..."), including a nice pile of additional book recommendations at least for R on a variety of statistical and simulation topics.  You can never have enough badly named PDF files in your reference folder.
+
+## On setup: use tidyverse in the first place
+
+Tidyverse is way more readable, and favours explicit naming of columns/variables when manipulating, which lends itself to readable code and makes human error in referencing the wrong stuff far less likely.  AI exists I hear - if you want to do something and can't think of a tidyverse way of doing it, ask one ;)
+
+```R
+df <- iris %>%
+  tibble() %>%
+  filter(Species == "setosa") %>%
+  select(Petal.Length, Petal.Width, Species)
+```
+
+
+## Input: data quality
+
+ Check what you think you're putting in.  Manually checking (boo) some aspects of the input data against their external source if possible can be good (for example, to check the right filters were applied in downloading from a portal of some kind).  If those things can be checked by scanning the data itself for min/max values eg; of year, or counts of number of countries included, even better.  Automate that shit and go live your life.
+
+With thanks to Matt Dancho, who wrote [Assess your Data Quality in R](https://www.r-bloggers.com/2021/03/assess-your-data-quality-in-r/) so no one else has to.  It mentions `Skimr`, an R package that offers a function `skim()` that provides an enhanced summary of a dataset over the base `summary()` function.
+
+Using `summary()` or `skim()` to eyeball your input data is a great start, check that ranges (min/max) and formats are as expected, and that any counts of `NA` are also broadly expected.  Since 99.99 % of the time you're ingesting a weird CSV file, double-check that you've got the columns you expect and that no extras or weird broken fields have been created through poorly formatted text.
+
+If you have some reason for checking a specific column, as well as using the above functions to check for NA values and for sensible min/max values, eyeballing the most common values can be useful to check for weird/repeating/dominating values:
+
+- `df %>% pull(<column>) %>% table()` (for counts of values)
+- `df %>% pull(<column>) %>% unique()` (to see all unique values)
+
+### For repeats: automate those checks with `validate`
+
+Thank you [statology.org](statology.org) for this guide, [How to Automate Data Quality Checks with R](https://www.statology.org/how-to-automate-data-quality-checks-r/) by Jayita Gulati.
+
+The library offers some very simple syntax for defining "validators" that check a dataframe conforms to user-defined rules on what values should be in which columns.
+Easier to imagine using this for input validation but there's no reason one couldn't instead use it to validate outputs are formatted as expected and within a certain range if you have a program you may run again.
+The report it creates also helpfully reports NA values, which is again a pretty handy thing to check on work output, where weird maths issues often manifest as NA.
+
+```R
+library(validate)
+
+# Define data quality rules
+rules <- validator(
+  Petal.Length >= 1.0 & Petal.Length <= 1.7,                 
+  Species %in% c("setosa", "virginica")                       
+)
+
+# Apply the rules to the dataset
+results <- confront(iris, rules)
+
+# Summarize the results
+summary_results <- summary(results)
+print(summary_results)
+```
+
+Output:
+
+```
+  name items passes fails nNA error warning
+1   V1   150     48   102   0 FALSE   FALSE
+2   V2   150    100    50   0 FALSE   FALSE
+                                                expression
+1 Petal.Length - 1 >= -1e-08 & Petal.Length - 1.7 <= 1e-08
+2                   Species %vin% c("setosa", "virginica")
+```
+
+In base R can use `if` and `stop` to terminate execution or print out a message if some test is not met.
+I've used it crudely to simplify and encapsulate tests in scripts.
+
+(I've also cheated and broken out of base R to use `glue` to compose a reasonably informative message...)
+
+```R
+library(glue)
+
+if (sum(df$sectors) != total) {
+    stop(
+        glue("Sum of sectoral values is greater than total.  Sum: {sum(df$sectors)}, Total: {total}")
+    )
+}
+```
+
+There's also a library called `assertthat`, which makes the tests a little clearer in return for an extra dependency to track.
+
+```R
+library(glue)
+library(assertthat)
+
+assert_that(
+    sum(df$sectors) <= total,
+    msg = glue("Sum of sectoral values is greater than total.  Sum: {sum(df$sectors)}, Total: {total}")
+)
+```
+
+## Functions: maths is correct
+
+You used R and not Excel, so you're ahead of the game.  As a reminder of the problems you now don't have, the maths is applied to the whole dataframe by default, no hunting for that one cell the formula somehow missed.  The equations directly reference variables/columns by name, no searching for incorrect cell references.  That's about 99 % of human Excel errors cut out by default (percentage; total guess...).
+
+Some tips for transparency in your maths:
+- Universal values/parameters should either be in a configuration file, or defined clearly at the top of the script.  Consider following the python convention of using ALL_CAPS for parameters that are global to your program.
+- Complex calculations can be broken up into multiple operations (even within a single "mutate" call) to make the purpose of each part of the calculation apparent and to make execution order of the calculations completely clear.
+- You can add `# Comments` to the end of every line, DO IT.
+
+An additional advantage of breaking up complex calculations into multiple stages with intermediate values stored in columns so that those intermediate values can be validated as above, using `validator` or `assert` or any other trick.  Unfortunately, exactly what checks might make sense for some value is the context dependent part you'll have to invent yourself.
+
+
+## Actually: lets address configuration explicitly
+
+Because it really helps with transparency.
+At minimum, configuration information for your experiment or process should be at the top of the script and clearly marked as the configuration space, but that's minimum, not recommended practice.
+A better option (for R) is to store your configuration including filepaths in a separate R file (perhaps `config.R`) that you then load at the start of your program with `source()`, so a file like this:
+
+`config.R`
+
+```R
+input_path <- "path/to/input.csv"
+output_path <- "path/to/results.csv"
+
+years_to_process <- c(2022, 2023, 2024)
+
+elasticity <- 4.0
+```
+
+An even better option is an entirely separate configuration file in some format specifically intended for it, like YAML.  I'm not going to go into that here because I don't yet have anything complicated enough to need it but you can find an excellent guide on all this in the [Duck Book (configuration chapter)](https://best-practice-and-impact.github.io/qa-of-code-guidance/configuration.html).
+
+
+## Output: validate and sense-check
+
+The same methods used to validate input data can be used to validate output data.
+The final step of figuring out what numbers would make sense is the pain in the ass bit requiring real thought unfortunately.
+**I suggest creating a space in your code for tests and a few rough tests early - that way you can add tests as you think of them through the project.**
+Every time you sense check something for yourself in building the code, you've just executed something that might be a useful test to keep in and run everytime the program runs.
+Let them accumulate.
+
+Consider also sense-checking your numbers against external sources.
+A rough example (not tested); if you are calculating trade figures for America, do a bit of googling and find out if your numbers make sense given total trade with America, which should be an easy number to find.
+If your calculation of value of back massagers sold in the USA out-values all trade for the last three years, you make have missplaced a zero.
+

@@ -8,6 +8,8 @@ image: "python_environments_nano_banana.jpg"
 
 Quick cribsheets for handling python environments through different tools
 
+*Cover art courtesy Google's Nano Banana*
+
 ## Conda - for weird Gov environments that don't have much else
 
 Creating it first time:

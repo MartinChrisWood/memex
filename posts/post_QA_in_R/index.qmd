@@ -3,13 +3,16 @@ title: "Quality Assurance of Analysis in R"
 author: "Martin Wood"
 date: "2025-06-08"
 categories: [snippet]
-image: ""
+image: "RStudio.png"
 draft: True
 ---
 
-## What does a person I actually test?  Some background on why this post exists
+I perform a lot of one-shot analysis and need to know it's right.
 
-I perform a lot of one-shot analysis.
+*logo pinched from [r-bloggers.com](https://www.r-bloggers.com/), great site, you should check it out*
+
+## What does a person actually test?  Some background on why this post exists
+
 The code ends up being either a few complicated scripts or a simple and dedicated program, dependent on which way round you want to view something very single-purpose that takes specifically formatted csv files as inputs :P
 A person can end up doing a lot of weird maths in a small number of lines, and the information is often being used to make important decisions in a hurry, so those numbers need to be ironclad.
 There is guidance available on what a QA process should look like at a high level; who should be involved, how to record it and what sign-off looks like, in the famous (kind of, in Gov circles, don't judge me...) [Aqua Book](https://www.gov.uk/government/publications/the-aqua-book-guidance-on-producing-quality-analysis-for-government).
@@ -19,13 +22,17 @@ This is a shame when analysts are more and more moving towards R rather than Exc
 
 **Not a new problem though!  Others got to this long before me.  This post records some methods and guides I've turfed up on what to actually do in building something.**
 
-## But first, if you want to do it properly
+___
+
+## First, properly from the start
 
 A far more comprehensive guide for analysts to writing and structuring reproducible, QA'able code, including information on how to peer review code, is available in [the Duck Book](https://best-practice-and-impact.github.io/qa-of-code-guidance/intro.html), created by the Office for National Statistics.  Includes helpful guides to matters like setting up YAML files for readable experiment configuration files.
 
 ![Duck Book logo, extremely cool](https://best-practice-and-impact.github.io/qa-of-code-guidance/_static/duck_book_logo.svg)
 
 Another interesting looking book is the [Researcher Programming Resources](https://rse.shef.ac.uk/training/programming) - From the University of Sheffield, covering best practices in R, Python and Matlab ("now, that's a name I've not heard in a long time..."), including a nice pile of additional book recommendations at least for R on a variety of statistical and simulation topics.  You can never have enough badly named PDF files in your reference folder.
+
+___
 
 ## On setup: use tidyverse in the first place
 
@@ -38,6 +45,7 @@ df <- iris %>%
   select(Petal.Length, Petal.Width, Species)
 ```
 
+___
 
 ## Input: data quality
 
@@ -115,6 +123,8 @@ assert_that(
 )
 ```
 
+___
+
 ## Functions: maths is correct
 
 You used R and not Excel, so you're ahead of the game.  As a reminder of the problems you now don't have, the maths is applied to the whole dataframe by default, no hunting for that one cell the formula somehow missed.  The equations directly reference variables/columns by name, no searching for incorrect cell references.  That's about 99 % of human Excel errors cut out by default (percentage; total guess...).
@@ -126,6 +136,7 @@ Some tips for transparency in your maths:
 
 An additional advantage of breaking up complex calculations into multiple stages with intermediate values stored in columns so that those intermediate values can be validated as above, using `validator` or `assert` or any other trick.  Unfortunately, exactly what checks might make sense for some value is the context dependent part you'll have to invent yourself.
 
+___
 
 ## Actually: lets address configuration explicitly
 
@@ -146,6 +157,7 @@ elasticity <- 4.0
 
 An even better option is an entirely separate configuration file in some format specifically intended for it, like YAML.  I'm not going to go into that here because I don't yet have anything complicated enough to need it but you can find an excellent guide on all this in the [Duck Book (configuration chapter)](https://best-practice-and-impact.github.io/qa-of-code-guidance/configuration.html).
 
+___
 
 ## Output: validate and sense-check
 

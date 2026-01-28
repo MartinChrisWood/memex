@@ -1,0 +1,28 @@
+---
+title: "Crib sheet: handling python environments through different tools"
+author: "Martin Wood"
+date: "2026-01-28"
+categories: [snippet]
+image: "python_environments_nano_banana.jpg"
+---
+
+Quick cribsheets for handling python environments through different tools
+
+## Conda - for weird Gov environments that don't have much else
+
+Creating it first time:
+
+```bash
+conda create --name environment_name
+conda activate environment_name
+conda install numpy pandas pdfplumber ipykernel jupyter openpyxl  # installing like this out of laziness
+conda env export > environment.yml                                # writing an environment file so I can properly restore it
+
+```
+
+To build the environment using the stored `environment.yml`:
+
+```bash
+conda env create -f environment.yml                     # recreate the environment described in that environment
+conda activate environment_name                         # activate
+```

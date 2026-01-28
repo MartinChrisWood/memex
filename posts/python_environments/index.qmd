@@ -2,15 +2,15 @@
 title: "Crib sheet: handling python environments through different tools"
 author: "Martin Wood"
 date: "2026-01-28"
-categories: [book notes]
-image: ""
+categories: [snippet]
+image: "python_environments_nano_banana.jpg"
 ---
 
-# Quick cribsheets for handling python environments through different tools
+Quick cribsheets for handling python environments through different tools
 
 ## Conda - for weird Gov environments that don't have much else
 
-First creation:
+Creating it first time:
 
 ```bash
 conda create --name environment_name

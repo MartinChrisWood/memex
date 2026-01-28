@@ -4,7 +4,6 @@ author: "Martin Wood"
 date: "2025-06-08"
 categories: [snippet]
 image: "RStudio.png"
-draft: True
 ---
 
 I perform a lot of one-shot analysis and need to know it's right.
@@ -87,7 +86,7 @@ print(summary_results)
 
 Output:
 
-```
+```R
   name items passes fails nNA error warning
 1   V1   150     48   102   0 FALSE   FALSE
 2   V2   150    100    50   0 FALSE   FALSE

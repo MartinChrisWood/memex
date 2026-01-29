@@ -13,8 +13,11 @@ import pandas as pd
 
 df = ...
 
+# Excel will interpret cells that start with a '-' as formulas
+df['some_field'] = df['some_field'].str.replace("- ", "")
+
 df.to_csv(
-"data/output/20260129_UK_CAN_RoO_by_HS6.csv", 
+"data/output/saved_file.csv", 
 quoting=csv.QUOTE_NONNUMERIC,                   # Quote all non-numeric fields in the output file, which forces excel to read as string
 encoding="utf-8-sig",                           # An encoding that adds a UTF-8 BOM (Byte Order Mark) that tells excel the doc is in UTF-8
 index=False                                     # Don't add a column for the index, only need this if your index is meaningless

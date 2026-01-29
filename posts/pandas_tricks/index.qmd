@@ -1,0 +1,24 @@
+## Saving files that Excel won't complain about
+
+Deal with a lot of columns that look like integers but are actually ID columns that can have leading zeroes.
+
+I also deal with a lot of human text with special characters, when saved in a csv file in UTF-8 as normal, Excel
+often fails to detect and correctly render the UTF-8 formatting due to being generally terrible software.
+
+How to save a file that excel will open, interpret and display correctly with these problems:
+
+```python
+import csv
+import pandas as pd
+
+df = ...
+
+df.to_csv(
+"data/output/20260129_UK_CAN_RoO_by_HS6.csv", 
+quoting=csv.QUOTE_NONNUMERIC,                   # Quote all non-numeric fields in the output file, which forces excel to read as string
+encoding="utf-8-sig",                           # An encoding that adds a UTF-8 BOM (Byte Order Mark) that tells excel the doc is in UTF-8
+index=False                                     # Don't add a column for the index, only need this if your index is meaningless
+)
+
+```
+

@@ -26,3 +26,16 @@ To build the environment using the stored `environment.yml`:
 conda env create -f environment.yml                     # recreate the environment described in that environment
 conda activate environment_name                         # activate
 ```
+
+
+## Bonus:  renv (R)
+
+```bash
+install.packages("renv")           # Install environment manager
+renv::init()                       # First run, create environment for project (current dir)
+renv::activate()                   # Or activate after navigating to project
+install.packages("readr")          # Install packages
+renv::snapshot()                   # Store exact package configuration to renv.lock file
+renv::restore()                    # Recreate environment from renv.lock file
+renv::revert()                     # Revert environment to that specified in renv.lock file
+```

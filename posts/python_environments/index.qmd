@@ -8,7 +8,17 @@ image: "python_environments_nano_banana.jpg"
 
 Quick cribsheets for handling python environments through different tools
 
-## Conda - for weird Gov environments that don't have much else
+## [Pip](https://pip.pypa.io/en/stable/)
+```bash
+python3 -m venv .env                        # Create venv off whatever python version you call from in folder .env
+source .env/bin/activate
+python -m pip install --update pip          # Bring pip up-to-date first
+pip install -r requirements.txt             # install modules listed in requirements.txt
+```
+
+[Pip documentation - requirements file format](https://pip.pypa.io/en/stable/reference/requirements-file-format/)
+
+## [Conda](https://docs.conda.io/en/latest/)
 
 Creating it first time:
 
@@ -28,7 +38,7 @@ conda activate environment_name                         # activate
 ```
 
 
-## Bonus:  renv (R)
+## Bonus:  [renv (R)](https://rstudio.github.io/renv/)
 
 ```bash
 install.packages("renv")           # Install environment manager

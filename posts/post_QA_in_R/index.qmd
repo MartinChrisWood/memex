@@ -2,7 +2,7 @@
 title: "Quality Assurance of Analysis in R"
 author: "Martin Wood"
 date: "2025-06-08"
-categories: [snippet]
+categories: [tutorial]
 image: "RStudio.png"
 ---
 
@@ -21,7 +21,6 @@ This is a shame when analysts are more and more moving towards R rather than Exc
 
 **Not a new problem though!  Others got to this long before me.  This post records some methods and guides I've turfed up on what to actually do in building something.**
 
-___
 
 ## First, properly from the start
 
@@ -31,7 +30,7 @@ A far more comprehensive guide for analysts to writing and structuring reproduci
 
 Another interesting looking book is the [Researcher Programming Resources](https://rse.shef.ac.uk/training/programming) - From the University of Sheffield, covering best practices in R, Python and Matlab ("now, that's a name I've not heard in a long time..."), including a nice pile of additional book recommendations at least for R on a variety of statistical and simulation topics.  You can never have enough badly named PDF files in your reference folder.
 
-___
+
 
 ## On setup: use tidyverse in the first place
 
@@ -44,7 +43,6 @@ df <- iris %>%
   select(Petal.Length, Petal.Width, Species)
 ```
 
-___
 
 ## Input: data quality
 
@@ -94,7 +92,7 @@ Output:
 1 Petal.Length - 1 >= -1e-08 & Petal.Length - 1.7 <= 1e-08
 2                   Species %vin% c("setosa", "virginica")
 ```
-~The example above adapted from [How to Automate Data Quality Checks with R](https://www.statology.org/how-to-automate-data-quality-checks-r/) by Jayita Gulati.~
+*The example above adapted from [How to Automate Data Quality Checks with R](https://www.statology.org/how-to-automate-data-quality-checks-r/) by Jayita Gulati.*
 
 In base R can use `if` and `stop` to terminate execution or print out a message if some test is not met.
 I've used it crudely to simplify and encapsulate tests in scripts.
@@ -123,7 +121,6 @@ assert_that(
 )
 ```
 
-___
 
 ## Functions: maths is correct
 
@@ -136,7 +133,6 @@ Some tips for transparency in your maths:
 
 An additional advantage of breaking up complex calculations into multiple stages with intermediate values stored in columns so that those intermediate values can be validated as above, using `validator` or `assert` or any other trick.  Unfortunately, exactly what checks might make sense for some value is the context dependent part you'll have to invent yourself.
 
-___
 
 ## Actually: lets address configuration explicitly
 
@@ -157,7 +153,6 @@ elasticity <- 4.0
 
 An even better option is an entirely separate configuration file in some format specifically intended for it, like YAML.  I'm not going to go into that here because I don't yet have anything complicated enough to need it but you can find an excellent guide on all this in the [Duck Book (configuration chapter)](https://best-practice-and-impact.github.io/qa-of-code-guidance/configuration.html).
 
-___
 
 ## Output: validate and sense-check
 

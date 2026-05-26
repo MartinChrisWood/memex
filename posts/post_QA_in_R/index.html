@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Martin Wood">
-<meta name="dcterms.date" content="2026-01-28">
+<meta name="dcterms.date" content="2025-06-08">
 
-<title>Crib sheet: handling python environments through different tools – memex</title>
+<title>Quality Assurance of Analysis in R – memex</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -154,9 +154,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Crib sheet: handling python environments through different tools</h1>
+      <h1 class="title">Quality Assurance of Analysis in R</h1>
                                 <div class="quarto-categories">
-                <div class="quarto-category">snippet</div>
+                <div class="quarto-category">tutorial</div>
               </div>
                   </div>
   </div>
@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">January 28, 2026</p>
+        <p class="date">June 8, 2025</p>
       </div>
     </div>
     
@@ -193,36 +193,110 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>Quick cribsheets for handling python environments through different tools</p>
-<p><em>Cover art courtesy Google’s Nano Banana</em></p>
-<section id="pip" class="level2">
-<h2 class="anchored" data-anchor-id="pip"><a href="https://pip.pypa.io/en/stable/">Pip</a></h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> venv .env                        <span class="co"># Create venv off whatever python version you call from in folder .env</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> .env/bin/activate</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> pip install <span class="at">--update</span> pip          <span class="co"># Bring pip up-to-date first</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-r</span> requirements.txt             <span class="co"># install modules listed in requirements.txt</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><a href="https://pip.pypa.io/en/stable/reference/requirements-file-format/">Pip documentation - requirements file format</a></p>
+<p>I perform a lot of one-shot analysis and need to know it’s right.</p>
+<p><em>logo pinched from <a href="https://www.r-bloggers.com/">r-bloggers.com</a>, great site, you should check it out</em></p>
+<section id="what-do-you-actually-test" class="level2">
+<h2 class="anchored" data-anchor-id="what-do-you-actually-test">What do you actually test?</h2>
+<p>The code ends up being either a few complicated scripts or a simple and dedicated program, dependent on which way round you want to view something very single-purpose that takes specifically formatted csv files as inputs :P A person can end up doing a lot of weird maths in a small number of lines, and the information is often being used to make important decisions in a hurry, so those numbers need to be ironclad. There is guidance available on what a QA process should look like at a high level; who should be involved, how to record it and what sign-off looks like, in the famous (kind of, in Gov circles, don’t judge me…) <a href="https://www.gov.uk/government/publications/the-aqua-book-guidance-on-producing-quality-analysis-for-government">Aqua Book</a>.</p>
+<p>My issue with this is it’s high level and software agnostic; it doesn’t demonstrate what to check or how, and I need to somehow turn that into actual code that passes or fails my crap. This is a shame when analysts are more and more moving towards R rather than Excel, where writing quality/data tests almost in the style of unit tests or end-to-end tests should be possible, and is an obvious safeguard for any analysis that may one day require replication.</p>
+<p><strong>Not a new problem though! Others got to this long before me. This post records some methods and guides I’ve turfed up on what to actually do in building something.</strong></p>
 </section>
-<section id="conda" class="level2">
-<h2 class="anchored" data-anchor-id="conda"><a href="https://docs.conda.io/en/latest/">Conda</a></h2>
-<p>Creating it first time:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> create <span class="at">--name</span> environment_name</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate environment_name</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install numpy pandas pdfplumber ipykernel jupyter openpyxl  <span class="co"># installing like this out of laziness</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> env export <span class="op">&gt;</span> environment.yml                                <span class="co"># writing an environment file so I can properly restore it</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>To build the environment using the stored <code>environment.yml</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> env create <span class="at">-f</span> environment.yml                     <span class="co"># recreate the environment described in that environment</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate environment_name                         <span class="co"># activate</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="first-properly-from-the-start" class="level2">
+<h2 class="anchored" data-anchor-id="first-properly-from-the-start">First, properly from the start</h2>
+<p>A far more comprehensive guide for analysts to writing and structuring reproducible, QA’able code, including information on how to peer review code, is available in <a href="https://best-practice-and-impact.github.io/qa-of-code-guidance/intro.html">the Duck Book</a>, created by the Office for National Statistics. Includes helpful guides to matters like setting up YAML files for readable experiment configuration files.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://best-practice-and-impact.github.io/qa-of-code-guidance/_static/duck_book_logo.svg" class="img-fluid figure-img"></p>
+<figcaption>Duck Book logo, extremely cool</figcaption>
+</figure>
+</div>
+<p>Another interesting looking book is the <a href="https://rse.shef.ac.uk/training/programming">Researcher Programming Resources</a> - From the University of Sheffield, covering best practices in R, Python and Matlab (“now, that’s a name I’ve not heard in a long time…”), including a nice pile of additional book recommendations at least for R on a variety of statistical and simulation topics. You can never have enough badly named PDF files in your reference folder.</p>
 </section>
-<section id="bonus-renv-r" class="level2">
-<h2 class="anchored" data-anchor-id="bonus-renv-r">Bonus: <a href="https://rstudio.github.io/renv/">renv (R)</a></h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">install.packages</span><span class="er">(</span><span class="st">"renv"</span><span class="kw">)</span>           <span class="co"># Install environment manager</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">renv::init()</span>                       <span class="co"># First run, create environment for project (current dir)</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">renv::activate()</span>                   <span class="co"># Or activate after navigating to project</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">install.packages</span><span class="er">(</span><span class="st">"readr"</span><span class="kw">)</span>          <span class="co"># Install packages</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">renv::snapshot()</span>                   <span class="co"># Store exact package configuration to renv.lock file</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">renv::restore()</span>                    <span class="co"># Recreate environment from renv.lock file</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">renv::revert()</span>                     <span class="co"># Revert environment to that specified in renv.lock file</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="on-setup-use-tidyverse-in-the-first-place" class="level2">
+<h2 class="anchored" data-anchor-id="on-setup-use-tidyverse-in-the-first-place">On setup: use tidyverse in the first place</h2>
+<p>Tidyverse is way more readable, and favours explicit naming of columns/variables when manipulating, which lends itself to readable code and makes human error in referencing the wrong stuff far less likely. AI exists I hear - if you want to do something and can’t think of a tidyverse way of doing it, ask one ;)</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> iris <span class="sc">%&gt;%</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Species <span class="sc">==</span> <span class="st">"setosa"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Petal.Length, Petal.Width, Species)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="input-data-quality" class="level2">
+<h2 class="anchored" data-anchor-id="input-data-quality">Input: data quality</h2>
+<p>Check what you think you’re putting in. Manually checking (boo) some aspects of the input data against their external source if possible can be good (for example, to check the right filters were applied in downloading from a portal of some kind). If those things can be checked by scanning the data itself for min/max values eg; of year, or counts of number of countries included, even better. Automate that shit and go live your life.</p>
+<p>With thanks to Matt Dancho, who wrote <a href="https://www.r-bloggers.com/2021/03/assess-your-data-quality-in-r/">Assess your Data Quality in R</a> so no one else has to. It mentions <code>Skimr</code>, an R package that offers a function <code>skim()</code> that provides an enhanced summary of a dataset over the base <code>summary()</code> function.</p>
+<p>Using <code>summary()</code> or <code>skim()</code> to eyeball your input data is a great start, check that ranges (min/max) and formats are as expected, and that any counts of <code>NA</code> are also broadly expected. Since 99.99 % of the time you’re ingesting a weird CSV file, double-check that you’ve got the columns you expect and that no extras or weird broken fields have been created through poorly formatted text.</p>
+<p>If you have some reason for checking a specific column, as well as using the above functions to check for NA values and for sensible min/max values, eyeballing the most common values can be useful to check for weird/repeating/dominating values:</p>
+<ul>
+<li><code>df %&gt;% pull(&lt;column&gt;) %&gt;% table()</code> (for counts of values)</li>
+<li><code>df %&gt;% pull(&lt;column&gt;) %&gt;% unique()</code> (to see all unique values)</li>
+</ul>
+<section id="for-repeats-automate-those-checks-with-validate" class="level3">
+<h3 class="anchored" data-anchor-id="for-repeats-automate-those-checks-with-validate">For repeats: automate those checks with <code>validate</code></h3>
+<p>Thank you <a href="statology.org">statology.org</a> for this guide, <a href="https://www.statology.org/how-to-automate-data-quality-checks-r/">How to Automate Data Quality Checks with R</a> by Jayita Gulati.</p>
+<p>The library offers some very simple syntax for defining “validators” that check a dataframe conforms to user-defined rules on what values should be in which columns. Easier to imagine using this for input validation but there’s no reason one couldn’t instead use it to validate outputs are formatted as expected and within a certain range if you have a program you may run again. The report it creates also helpfully reports NA values, which is again a pretty handy thing to check on work output, where weird maths issues often manifest as NA.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(validate)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Define data quality rules</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>rules <span class="ot">&lt;-</span> <span class="fu">validator</span>(</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  Petal.Length <span class="sc">&gt;=</span> <span class="fl">1.0</span> <span class="sc">&amp;</span> Petal.Length <span class="sc">&lt;=</span> <span class="fl">1.7</span>,                 </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  Species <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"setosa"</span>, <span class="st">"virginica"</span>)                       </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply the rules to the dataset</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">confront</span>(iris, rules)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Summarize the results</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>summary_results <span class="ot">&lt;-</span> <span class="fu">summary</span>(results)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(summary_results)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Output:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>  name items passes fails nNA error warning</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span>   V1   <span class="dv">150</span>     <span class="dv">48</span>   <span class="dv">102</span>   <span class="dv">0</span> <span class="cn">FALSE</span>   <span class="cn">FALSE</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span>   V2   <span class="dv">150</span>    <span class="dv">100</span>    <span class="dv">50</span>   <span class="dv">0</span> <span class="cn">FALSE</span>   <span class="cn">FALSE</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                                                expression</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> Petal.Length <span class="sc">-</span> <span class="dv">1</span> <span class="sc">&gt;=</span> <span class="sc">-</span><span class="fl">1e-08</span> <span class="sc">&amp;</span> Petal.Length <span class="sc">-</span> <span class="fl">1.7</span> <span class="sc">&lt;=</span> <span class="fl">1e-08</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span>                   Species <span class="sc">%vin%</span> <span class="fu">c</span>(<span class="st">"setosa"</span>, <span class="st">"virginica"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>The example above adapted from <a href="https://www.statology.org/how-to-automate-data-quality-checks-r/">How to Automate Data Quality Checks with R</a> by Jayita Gulati.</em></p>
+<p>In base R can use <code>if</code> and <code>stop</code> to terminate execution or print out a message if some test is not met. I’ve used it crudely to simplify and encapsulate tests in scripts.</p>
+<p>(I’ve also cheated and broken out of base R to use <code>glue</code> to compose a reasonably informative message…)</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glue)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">sum</span>(df<span class="sc">$</span>sectors) <span class="sc">!=</span> total) {</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">glue</span>(<span class="st">"Sum of sectoral values is greater than total.  Sum: {sum(df$sectors)}, Total: {total}"</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>There’s also a library called <code>assertthat</code>, which makes the tests a little clearer in return for an extra dependency to track.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glue)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(assertthat)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">assert_that</span>(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sum</span>(df<span class="sc">$</span>sectors) <span class="sc">&lt;=</span> total,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">msg =</span> <span class="fu">glue</span>(<span class="st">"Sum of sectoral values is greater than total.  Sum: {sum(df$sectors)}, Total: {total}"</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="functions-maths-is-correct" class="level2">
+<h2 class="anchored" data-anchor-id="functions-maths-is-correct">Functions: maths is correct</h2>
+<p>You used R and not Excel, so you’re ahead of the game. As a reminder of the problems you now don’t have, the maths is applied to the whole dataframe by default, no hunting for that one cell the formula somehow missed. The equations directly reference variables/columns by name, no searching for incorrect cell references. That’s about 99 % of human Excel errors cut out by default (percentage; total guess…).</p>
+<p>Some tips for transparency in your maths: - Universal values/parameters should either be in a configuration file, or defined clearly at the top of the script. Consider following the python convention of using ALL_CAPS for parameters that are global to your program. - Complex calculations can be broken up into multiple operations (even within a single “mutate” call) to make the purpose of each part of the calculation apparent and to make execution order of the calculations completely clear. - You can add <code># Comments</code> to the end of every line, DO IT.</p>
+<p>An additional advantage of breaking up complex calculations into multiple stages with intermediate values stored in columns so that those intermediate values can be validated as above, using <code>validator</code> or <code>assert</code> or any other trick. Unfortunately, exactly what checks might make sense for some value is the context dependent part you’ll have to invent yourself.</p>
+</section>
+<section id="actually-lets-address-configuration-explicitly" class="level2">
+<h2 class="anchored" data-anchor-id="actually-lets-address-configuration-explicitly">Actually: lets address configuration explicitly</h2>
+<p>Because it really helps with transparency. At minimum, configuration information for your experiment or process should be at the top of the script and clearly marked as the configuration space, but that’s minimum, not recommended practice. A better option (for R) is to store your configuration including filepaths in a separate R file (perhaps <code>config.R</code>) that you then load at the start of your program with <code>source()</code>, so a file like this:</p>
+<p><code>config.R</code></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>input_path <span class="ot">&lt;-</span> <span class="st">"path/to/input.csv"</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>output_path <span class="ot">&lt;-</span> <span class="st">"path/to/results.csv"</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>years_to_process <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2022</span>, <span class="dv">2023</span>, <span class="dv">2024</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>elasticity <span class="ot">&lt;-</span> <span class="fl">4.0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>An even better option is an entirely separate configuration file in some format specifically intended for it, like YAML. I’m not going to go into that here because I don’t yet have anything complicated enough to need it but you can find an excellent guide on all this in the <a href="https://best-practice-and-impact.github.io/qa-of-code-guidance/configuration.html">Duck Book (configuration chapter)</a>.</p>
+</section>
+<section id="output-validate-and-sense-check" class="level2">
+<h2 class="anchored" data-anchor-id="output-validate-and-sense-check">Output: validate and sense-check</h2>
+<p>The same methods used to validate input data can be used to validate output data. The final step of figuring out what numbers would make sense is the pain in the ass bit requiring real thought unfortunately. <strong>I suggest creating a space in your code for tests and a few rough tests early - that way you can add tests as you think of them through the project.</strong> Every time you sense check something for yourself in building the code, you’ve just executed something that might be a useful test to keep in and run everytime the program runs. Let them accumulate.</p>
+<p>Consider also sense-checking your numbers against external sources. A rough example (not tested); if you are calculating trade figures for America, do a bit of googling and find out if your numbers make sense given total trade with America, which should be an easy number to find. If your calculation of value of back massagers sold in the USA out-values all trade for the last three years, you make have missplaced a zero.</p>
 
 
 </section>

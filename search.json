@@ -1,5 +1,243 @@
 [
   {
+    "objectID": "posts/post_QA_in_R/index.html",
+    "href": "posts/post_QA_in_R/index.html",
+    "title": "Quality Assurance of Analysis in R",
+    "section": "",
+    "text": "I perform a lot of one-shot analysis and need to know it’s right.\nlogo pinched from r-bloggers.com, great site, you should check it out"
+  },
+  {
+    "objectID": "posts/post_QA_in_R/index.html#what-do-you-actually-test",
+    "href": "posts/post_QA_in_R/index.html#what-do-you-actually-test",
+    "title": "Quality Assurance of Analysis in R",
+    "section": "What do you actually test?",
+    "text": "What do you actually test?\nThe code ends up being either a few complicated scripts or a simple and dedicated program, dependent on which way round you want to view something very single-purpose that takes specifically formatted csv files as inputs :P A person can end up doing a lot of weird maths in a small number of lines, and the information is often being used to make important decisions in a hurry, so those numbers need to be ironclad. There is guidance available on what a QA process should look like at a high level; who should be involved, how to record it and what sign-off looks like, in the famous (kind of, in Gov circles, don’t judge me…) Aqua Book.\nMy issue with this is it’s high level and software agnostic; it doesn’t demonstrate what to check or how, and I need to somehow turn that into actual code that passes or fails my crap. This is a shame when analysts are more and more moving towards R rather than Excel, where writing quality/data tests almost in the style of unit tests or end-to-end tests should be possible, and is an obvious safeguard for any analysis that may one day require replication.\nNot a new problem though! Others got to this long before me. This post records some methods and guides I’ve turfed up on what to actually do in building something."
+  },
+  {
+    "objectID": "posts/post_QA_in_R/index.html#first-properly-from-the-start",
+    "href": "posts/post_QA_in_R/index.html#first-properly-from-the-start",
+    "title": "Quality Assurance of Analysis in R",
+    "section": "First, properly from the start",
+    "text": "First, properly from the start\nA far more comprehensive guide for analysts to writing and structuring reproducible, QA’able code, including information on how to peer review code, is available in the Duck Book, created by the Office for National Statistics. Includes helpful guides to matters like setting up YAML files for readable experiment configuration files.\n\n\n\nDuck Book logo, extremely cool\n\n\nAnother interesting looking book is the Researcher Programming Resources - From the University of Sheffield, covering best practices in R, Python and Matlab (“now, that’s a name I’ve not heard in a long time…”), including a nice pile of additional book recommendations at least for R on a variety of statistical and simulation topics. You can never have enough badly named PDF files in your reference folder."
+  },
+  {
+    "objectID": "posts/post_QA_in_R/index.html#on-setup-use-tidyverse-in-the-first-place",
+    "href": "posts/post_QA_in_R/index.html#on-setup-use-tidyverse-in-the-first-place",
+    "title": "Quality Assurance of Analysis in R",
+    "section": "On setup: use tidyverse in the first place",
+    "text": "On setup: use tidyverse in the first place\nTidyverse is way more readable, and favours explicit naming of columns/variables when manipulating, which lends itself to readable code and makes human error in referencing the wrong stuff far less likely. AI exists I hear - if you want to do something and can’t think of a tidyverse way of doing it, ask one ;)\ndf &lt;- iris %&gt;%\n  tibble() %&gt;%\n  filter(Species == \"setosa\") %&gt;%\n  select(Petal.Length, Petal.Width, Species)"
+  },
+  {
+    "objectID": "posts/post_QA_in_R/index.html#input-data-quality",
+    "href": "posts/post_QA_in_R/index.html#input-data-quality",
+    "title": "Quality Assurance of Analysis in R",
+    "section": "Input: data quality",
+    "text": "Input: data quality\nCheck what you think you’re putting in. Manually checking (boo) some aspects of the input data against their external source if possible can be good (for example, to check the right filters were applied in downloading from a portal of some kind). If those things can be checked by scanning the data itself for min/max values eg; of year, or counts of number of countries included, even better. Automate that shit and go live your life.\nWith thanks to Matt Dancho, who wrote Assess your Data Quality in R so no one else has to. It mentions Skimr, an R package that offers a function skim() that provides an enhanced summary of a dataset over the base summary() function.\nUsing summary() or skim() to eyeball your input data is a great start, check that ranges (min/max) and formats are as expected, and that any counts of NA are also broadly expected. Since 99.99 % of the time you’re ingesting a weird CSV file, double-check that you’ve got the columns you expect and that no extras or weird broken fields have been created through poorly formatted text.\nIf you have some reason for checking a specific column, as well as using the above functions to check for NA values and for sensible min/max values, eyeballing the most common values can be useful to check for weird/repeating/dominating values:\n\ndf %&gt;% pull(&lt;column&gt;) %&gt;% table() (for counts of values)\ndf %&gt;% pull(&lt;column&gt;) %&gt;% unique() (to see all unique values)\n\n\nFor repeats: automate those checks with validate\nThank you statology.org for this guide, How to Automate Data Quality Checks with R by Jayita Gulati.\nThe library offers some very simple syntax for defining “validators” that check a dataframe conforms to user-defined rules on what values should be in which columns. Easier to imagine using this for input validation but there’s no reason one couldn’t instead use it to validate outputs are formatted as expected and within a certain range if you have a program you may run again. The report it creates also helpfully reports NA values, which is again a pretty handy thing to check on work output, where weird maths issues often manifest as NA.\nlibrary(validate)\n\n# Define data quality rules\nrules &lt;- validator(\n  Petal.Length &gt;= 1.0 & Petal.Length &lt;= 1.7,                 \n  Species %in% c(\"setosa\", \"virginica\")                       \n)\n\n# Apply the rules to the dataset\nresults &lt;- confront(iris, rules)\n\n# Summarize the results\nsummary_results &lt;- summary(results)\nprint(summary_results)\nOutput:\n  name items passes fails nNA error warning\n1   V1   150     48   102   0 FALSE   FALSE\n2   V2   150    100    50   0 FALSE   FALSE\n                                                expression\n1 Petal.Length - 1 &gt;= -1e-08 & Petal.Length - 1.7 &lt;= 1e-08\n2                   Species %vin% c(\"setosa\", \"virginica\")\nThe example above adapted from How to Automate Data Quality Checks with R by Jayita Gulati.\nIn base R can use if and stop to terminate execution or print out a message if some test is not met. I’ve used it crudely to simplify and encapsulate tests in scripts.\n(I’ve also cheated and broken out of base R to use glue to compose a reasonably informative message…)\nlibrary(glue)\n\nif (sum(df$sectors) != total) {\n    stop(\n        glue(\"Sum of sectoral values is greater than total.  Sum: {sum(df$sectors)}, Total: {total}\")\n    )\n}\nThere’s also a library called assertthat, which makes the tests a little clearer in return for an extra dependency to track.\nlibrary(glue)\nlibrary(assertthat)\n\nassert_that(\n    sum(df$sectors) &lt;= total,\n    msg = glue(\"Sum of sectoral values is greater than total.  Sum: {sum(df$sectors)}, Total: {total}\")\n)"
+  },
+  {
+    "objectID": "posts/post_QA_in_R/index.html#functions-maths-is-correct",
+    "href": "posts/post_QA_in_R/index.html#functions-maths-is-correct",
+    "title": "Quality Assurance of Analysis in R",
+    "section": "Functions: maths is correct",
+    "text": "Functions: maths is correct\nYou used R and not Excel, so you’re ahead of the game. As a reminder of the problems you now don’t have, the maths is applied to the whole dataframe by default, no hunting for that one cell the formula somehow missed. The equations directly reference variables/columns by name, no searching for incorrect cell references. That’s about 99 % of human Excel errors cut out by default (percentage; total guess…).\nSome tips for transparency in your maths: - Universal values/parameters should either be in a configuration file, or defined clearly at the top of the script. Consider following the python convention of using ALL_CAPS for parameters that are global to your program. - Complex calculations can be broken up into multiple operations (even within a single “mutate” call) to make the purpose of each part of the calculation apparent and to make execution order of the calculations completely clear. - You can add # Comments to the end of every line, DO IT.\nAn additional advantage of breaking up complex calculations into multiple stages with intermediate values stored in columns so that those intermediate values can be validated as above, using validator or assert or any other trick. Unfortunately, exactly what checks might make sense for some value is the context dependent part you’ll have to invent yourself."
+  },
+  {
+    "objectID": "posts/post_QA_in_R/index.html#actually-lets-address-configuration-explicitly",
+    "href": "posts/post_QA_in_R/index.html#actually-lets-address-configuration-explicitly",
+    "title": "Quality Assurance of Analysis in R",
+    "section": "Actually: lets address configuration explicitly",
+    "text": "Actually: lets address configuration explicitly\nBecause it really helps with transparency. At minimum, configuration information for your experiment or process should be at the top of the script and clearly marked as the configuration space, but that’s minimum, not recommended practice. A better option (for R) is to store your configuration including filepaths in a separate R file (perhaps config.R) that you then load at the start of your program with source(), so a file like this:\nconfig.R\ninput_path &lt;- \"path/to/input.csv\"\noutput_path &lt;- \"path/to/results.csv\"\n\nyears_to_process &lt;- c(2022, 2023, 2024)\n\nelasticity &lt;- 4.0\nAn even better option is an entirely separate configuration file in some format specifically intended for it, like YAML. I’m not going to go into that here because I don’t yet have anything complicated enough to need it but you can find an excellent guide on all this in the Duck Book (configuration chapter)."
+  },
+  {
+    "objectID": "posts/post_QA_in_R/index.html#output-validate-and-sense-check",
+    "href": "posts/post_QA_in_R/index.html#output-validate-and-sense-check",
+    "title": "Quality Assurance of Analysis in R",
+    "section": "Output: validate and sense-check",
+    "text": "Output: validate and sense-check\nThe same methods used to validate input data can be used to validate output data. The final step of figuring out what numbers would make sense is the pain in the ass bit requiring real thought unfortunately. I suggest creating a space in your code for tests and a few rough tests early - that way you can add tests as you think of them through the project. Every time you sense check something for yourself in building the code, you’ve just executed something that might be a useful test to keep in and run everytime the program runs. Let them accumulate.\nConsider also sense-checking your numbers against external sources. A rough example (not tested); if you are calculating trade figures for America, do a bit of googling and find out if your numbers make sense given total trade with America, which should be an easy number to find. If your calculation of value of back massagers sold in the USA out-values all trade for the last three years, you make have missplaced a zero."
+  },
+  {
+    "objectID": "posts/pandas_excel/index.html",
+    "href": "posts/pandas_excel/index.html",
+    "title": "Save csv file from Pandas that Excel won’t ruin",
+    "section": "",
+    "text": "Saving files that Excel won’t ruin\nDeal with a lot of columns that look like integers but are actually ID columns that can have leading zeroes.\nI also deal with a lot of human text with special characters, when saved in a csv file in UTF-8 as normal, Excel often fails to detect and correctly render the UTF-8 formatting due to being generally terrible software.\nHow to save a file (from Python) that excel will open, interpret and display correctly with these problems:\nimport csv\nimport pandas as pd\n\ndf = ...\n\n# Excel will interpret cells that start with a '-' as formulas\ndf['some_field'] = df['some_field'].str.replace(\"- \", \"\")\n\ndf.to_csv(\n\"data/output/saved_file.csv\", \nquoting=csv.QUOTE_NONNUMERIC,                   # Quote all non-numeric fields in the output file, which forces excel to read as string\nencoding=\"utf-8-sig\",                           # An encoding that adds a UTF-8 BOM (Byte Order Mark) that tells excel the doc is in UTF-8\nindex=False                                     # Don't add a column for the index, only need this if your index is meaningless\n)"
+  },
+  {
+    "objectID": "posts/welcome/index.html",
+    "href": "posts/welcome/index.html",
+    "title": "Welcome To My Blog",
+    "section": "",
+    "text": "And so I’ve stolen the example/template post. Anyway, intending to use this to record bits and pieces of what I learn, mostly for my sake."
+  },
+  {
+    "objectID": "posts/welcome/index.html#made-with-quarto",
+    "href": "posts/welcome/index.html#made-with-quarto",
+    "title": "Welcome To My Blog",
+    "section": "Made with Quarto",
+    "text": "Made with Quarto\nDownload Quarto\nQuarto (blog) guidance\nGithub pages guidance\nquarto render\nquarto publish"
+  },
+  {
+    "objectID": "posts/review_DSATCL/index.html",
+    "href": "posts/review_DSATCL/index.html",
+    "title": "Book Notes: Data Science at the Command Line",
+    "section": "",
+    "text": "Basics of building data pipelines using command line tools. On the basics the book goes into a little detail on the difference between binary executables (machine code), shell builtin’s (like ls or pwd, interpreted scripts (writing things in python or other languages), shell functions and aliases.\nAvailable free to read online here\nBook mostly focusses on interpreted scripts, shell functions and aliases, used to compose our own commandline tools and workflows.\nI’m using wsl2 to run these things, using the list of command line tools at the end of the book to find out what to install, because it’s useful to see what I need to do to get it running on other machines. But the docker image is pretty easy to set up as a speedier way to start! Honestly, it uses so many installed extras that I would recommend the docker route in hindsight.\nExplains how to pipe these together, which was handy for me because a) suddenly what R tidyverse is trying to do makes more sense and b) a lot of little commands in the scriptier or base parts of Python and R suddenly make far more sense! Eg; grepl in R from the grep builtin (is it builtin?), head…\n$ head -n 3 movies.txt\nMatrix\nStar Wars\nHome Alone\nFirst line of a script is what defines what executes it, eg for bash, R and Python respectively;\n#!/bin/bash\n#!/usr/bin/env Rscript\n#!/usr/bin/env python3"
+  },
+  {
+    "objectID": "posts/review_DSATCL/index.html#the-book",
+    "href": "posts/review_DSATCL/index.html#the-book",
+    "title": "Book Notes: Data Science at the Command Line",
+    "section": "",
+    "text": "Basics of building data pipelines using command line tools. On the basics the book goes into a little detail on the difference between binary executables (machine code), shell builtin’s (like ls or pwd, interpreted scripts (writing things in python or other languages), shell functions and aliases.\nAvailable free to read online here\nBook mostly focusses on interpreted scripts, shell functions and aliases, used to compose our own commandline tools and workflows.\nI’m using wsl2 to run these things, using the list of command line tools at the end of the book to find out what to install, because it’s useful to see what I need to do to get it running on other machines. But the docker image is pretty easy to set up as a speedier way to start! Honestly, it uses so many installed extras that I would recommend the docker route in hindsight.\nExplains how to pipe these together, which was handy for me because a) suddenly what R tidyverse is trying to do makes more sense and b) a lot of little commands in the scriptier or base parts of Python and R suddenly make far more sense! Eg; grepl in R from the grep builtin (is it builtin?), head…\n$ head -n 3 movies.txt\nMatrix\nStar Wars\nHome Alone\nFirst line of a script is what defines what executes it, eg for bash, R and Python respectively;\n#!/bin/bash\n#!/usr/bin/env Rscript\n#!/usr/bin/env python3"
+  },
+  {
+    "objectID": "posts/review_DSATCL/index.html#tools",
+    "href": "posts/review_DSATCL/index.html#tools",
+    "title": "Book Notes: Data Science at the Command Line",
+    "section": "Tools",
+    "text": "Tools\nThe Unix philosophy (Art of Unix Programming is a great text). Then pipe between those (good, focussed) tools. Based on management of stdin, stdout, stderr. If you really need an example of this, type rev and play around.\nA very short example, counting the number of chapters in Adventures in Wonderland (including downloading with curl)\n$ curl -s \"https://www.gutenberg.org/files/11/11-0.txt\" |\n&gt; grep \" CHAPTER\" |\n&gt; wc -l\n12\n(And use &gt; and &gt;&gt; to output to a file if you want, or read from those files with cat).\n2&gt; redirects the error messages to files, used this in Data Engineering at least once while debugging something long-running in an inadvisably hands-on manner in Azure.\nLots of the tools used are actually non-standard bits created by Jeronen or others - though that these can be created, distributed and reused so easily is kind of the point. Jeroen’s own tools - dsutls\n\nHandy bit for installing the tools I’ve been playing with:\nsudo apt install cowsay rust-bat moreutils csvkit\nSome things I’ve found super useful: csvlook/csv2md, batcat (in book as “bat” but there’s a name clash when I install on 24.04), tee for pushing out intermediate results. And of course, I always forget “man” is an option because we have the internet now… and it turns out I can press “/” to search these pages! Probably other things that open in this reader mode! jq super useful when dealing with web data/API’s/config files. Literally never heard of the tldr command…\ncsvlook -I prevents type inference and formatting eg; of numbers (interpreted years as numbers and added thousand commas without this).\n\ncsvgrep for searching/filtering csv\njq for working through json keys\n\n$ &lt; wikimedia-stream-sample sed -n 's/^data: //p' |\n&gt; jq 'select(.type == \"edit\" and .server_name == \"en.wikipedia.org\") | .title'"
+  },
+  {
+    "objectID": "posts/review_DSATCL/index.html#making-scripts",
+    "href": "posts/review_DSATCL/index.html#making-scripts",
+    "title": "Book Notes: Data Science at the Command Line",
+    "section": "Making scripts",
+    "text": "Making scripts\nFor example, here’s a surprisingly sophisticated bash script:\nSee this page\ncurl -sL \"https://www.gutenberg.org/files/11/11-0.txt\" |\n&gt; tr '[:upper:]' '[:lower:]' |\n&gt; grep -oE \"[a-z\\']{2,}\" |\n&gt; sort |\n&gt; uniq -c |\n&gt; sort -nr |\n&gt; head -n 10\nJust start writing your commands, if no input is defined in your script, will take from stdin, which means you can pipe stuff at it. Defining arguments is simple too. Names them rather than using directly for readability.\nSee example here"
+  },
+  {
+    "objectID": "posts/review_DSATCL/index.html#documentation-and-security",
+    "href": "posts/review_DSATCL/index.html#documentation-and-security",
+    "title": "Book Notes: Data Science at the Command Line",
+    "section": "Documentation and security",
+    "text": "Documentation and security\nIt mentions docopt as a tool for adding help docs? Should look in to that. Also ShellCheck for scanning bash code for issues/vulnerabilities."
+  },
+  {
+    "objectID": "posts/review_DSATCL/index.html#thoughts",
+    "href": "posts/review_DSATCL/index.html#thoughts",
+    "title": "Book Notes: Data Science at the Command Line",
+    "section": "Thoughts",
+    "text": "Thoughts\n\nBook is mostly useful for learning bash/shell/zsh/unix if you don’t know it already, that’s me for sure, probably not essential. Also, the command line is absolutely the kind of thing that’s so well documented that AI will be brilliant at it but who cares about that.\nI like that he’s fairly casual about not explaining every flag, command and use in the book, you need to go look things up if you want details and that’s always a good learning mechanism.\nThere are definitely tools in here I’m going to abuse - curl, weirdly, I just find more elegant than messing with python requests, and coupled with jq and csv type tools I can write something that’ll just work in a lot of places (read: VM’s in Azure) without having to mess around with venv. I also love being able to turn csv into markdown tables though I bet that exists inside Python!\nI like that he uses Nano, I know clever editors based on keyboards and nothing but keyboards exist, and I will never have time to care. Actual typing is not the least efficient part of my day.\nI notice also that for applications for which tools already exist, the python version is more verbose (albeit possibly more readable? I’m not confident on that)\nThe continuous allowance for streaming data is really interesting also, not something I’ve ever had to consider as a “research” data scientist"
+  },
+  {
+    "objectID": "posts/post_gantt/index.html",
+    "href": "posts/post_gantt/index.html",
+    "title": "Making a Gantt Chart in Python",
+    "section": "",
+    "text": "Code for generating Gantt Charts, pretty ones, in Plotly.\nRead the original Plotly examples if you want to get started marginally quicker, and to see more examples of variants of these plots. Mine’s got some extra plotly arguments and a marginally more complete pile of code at the end.\nUses Python, Pandas and Plotly. The project has two logical components; creating a suitable dataframe representation of the tasks to be completed, and plotting that. Simple! Credit to this Plotly guide for providing all the code I’m going to adapt. The only real change I need is the ability to visualise dependencies between tasks.\nMy repo for this\n\n\n\nExample Gantt chart visualisation"
+  },
+  {
+    "objectID": "posts/post_gantt/index.html#what",
+    "href": "posts/post_gantt/index.html#what",
+    "title": "Making a Gantt Chart in Python",
+    "section": "",
+    "text": "Code for generating Gantt Charts, pretty ones, in Plotly.\nRead the original Plotly examples if you want to get started marginally quicker, and to see more examples of variants of these plots. Mine’s got some extra plotly arguments and a marginally more complete pile of code at the end.\nUses Python, Pandas and Plotly. The project has two logical components; creating a suitable dataframe representation of the tasks to be completed, and plotting that. Simple! Credit to this Plotly guide for providing all the code I’m going to adapt. The only real change I need is the ability to visualise dependencies between tasks.\nMy repo for this\n\n\n\nExample Gantt chart visualisation"
+  },
+  {
+    "objectID": "posts/post_gantt/index.html#why",
+    "href": "posts/post_gantt/index.html#why",
+    "title": "Making a Gantt Chart in Python",
+    "section": "Why?",
+    "text": "Why?\nGantt charts are boring and I dislike excel intensely so I’m going to build this instead. This is probably not the best approach. The best approach would be something that integrates with your DevOps platform, but I don’t know any and am not currently working with one ;)\nA second best approach would be dedicated software, there seem to be a lot of free Gantt chart generators available. I’ve used the ugly but standalone (and free) GanttProject before, which nicely handles dependencies between tasks and produces functional output. It’s a good quick option.\nBut if I build it in Python I will have a tool I can easily point at different underlying data for each project I need one for. Plus Plotly gives me scalable html output with mouseover text, which is pretty handy when there’s a lot of optional context to tasks."
+  },
+  {
+    "objectID": "posts/post_gantt/index.html#creating-the-data",
+    "href": "posts/post_gantt/index.html#creating-the-data",
+    "title": "Making a Gantt Chart in Python",
+    "section": "Creating the data",
+    "text": "Creating the data\nScript expects a csv file with columns to describe the tasks and their start and end dates. I’ve added one for dependencies, but it’s just a text column that gets displayed really.\n\n\n\nTask\nStart\nFinish\nDependencies\nResource\n\n\n\n\n“Job A”\n‘2025-06-01’\n‘2025-08-20’\n\nBill\n\n\n“Job B”\n‘2025-08-20’\n‘2025-11-28’\n‘Job A’\nBen\n\n\n“Job C”\n‘2025-09-28’\n‘2025-11-28’\n‘Job A’\nBill\n\n\nJob D”\n‘2025-12-01’\n‘2026-01-28’\n‘Job B’\nBill\n\n\n“Job E”\n‘2025-12-01’\n‘2026-01-28’\n‘Job C’\nBen"
+  },
+  {
+    "objectID": "posts/post_gantt/index.html#plotting-using-plotly-expresss-timeline-method",
+    "href": "posts/post_gantt/index.html#plotting-using-plotly-expresss-timeline-method",
+    "title": "Making a Gantt Chart in Python",
+    "section": "Plotting using plotly express’s timeline method",
+    "text": "Plotting using plotly express’s timeline method\nimport plotly.express as px\nimport plotly.graph_objects as go\n\nimport numpy as np\nimport pandas as pd\n\n\n# Load the data (see section above)\ndf = pd.read_csv(\"example.csv\", dtype=str)\n\n# Create the labelling for the task blocks (I want to see task dependencies)\ndf['Labelling'] = np.where(\n    df['Dependencies'].isnull(),\n    df['Task'],\n    df['Task'] + \", Dependencies: \" + df[\"Dependencies\"]\n)\n\n# Order as I want plotted\ndf = df.sort_values(\"Start\", ascending=False)\n\n# Plot\nfig = px.timeline(\n    df,\n    x_start=\"Start\",\n    x_end=\"Finish\",\n    y=\"Task\",\n    color=\"Resource\",\n    text=\"Labelling\",\n    hover_name=\"Resource\",\n    hover_data={\"Resource\": False, \"Start\": True, \"Finish\": True, \"Labelling\": False},\n    title=\"Gantt Chart\"\n)\n\nfig.show()"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About Martin",
+    "section": "",
+    "text": "Martin is a “technologist” currently working in the public sector as a data scientist, with an interest in all things tech, AI and cyberpunk! His office time is spent applying NLP and LLM tools in the field of information retrieval, getting piles of government records and administrative data to talk back to him. There’s a side of dashboarding (RShiny), Pythonic web development (Flask) and the occasional foray into the Azure ecosystem. Currently there’s a lot of data processing and statistics (R).\nThere are also the weird project requests, building tools to figure out where the buses are, or what just happened to the jobs market.\nHis free time is spent playing co-op PC games, reading bad sci-fi, hiking and camping."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Martin Trying to Remember Things",
+    "section": "",
+    "text": "Jellyfin server - from DVD ripping to watching films in the bath\n\n\n\ntutorial\n\n\n\n\n\n\n\n\n\nMay 26, 2026\n\n\nMartin Wood\n\n\n\n\n\n\n\n\n\n\n\n\nSave csv file from Pandas that Excel won’t ruin\n\n\n\nsnippet\n\n\n\n\n\n\n\n\n\nMay 26, 2026\n\n\nMartin Wood\n\n\n\n\n\n\n\n\n\n\n\n\nReminding myself how to use Quarto to build this website\n\n\n\ntutorial\n\n\n\n\n\n\n\n\n\nMay 26, 2026\n\n\nMartin Wood\n\n\n\n\n\n\n\n\n\n\n\n\nCrib sheet: handling python environments through different tools\n\n\n\nsnippet\n\n\n\n\n\n\n\n\n\nJan 28, 2026\n\n\nMartin Wood\n\n\n\n\n\n\n\n\n\n\n\n\nQuality Assurance of Analysis in R\n\n\n\ntutorial\n\n\n\n\n\n\n\n\n\nJun 8, 2025\n\n\nMartin Wood\n\n\n\n\n\n\n\n\n\n\n\n\nMaking a Gantt Chart in Python\n\n\n\nsnippet\n\n\n\n\n\n\n\n\n\nMay 30, 2025\n\n\nMartin Wood\n\n\n\n\n\n\n\n\n\n\n\n\nBook Notes: Data Science at the Command Line\n\n\n\nbook notes\n\n\n\n\n\n\n\n\n\nMay 18, 2025\n\n\nMartin Wood\n\n\n\n\n\n\n\n\n\n\n\n\nBook Notes: Structure and Interpretation of Computer Programs\n\n\n\nbook notes\n\n\n\n\n\n\n\n\n\nApr 4, 2025\n\n\nMartin Wood\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nJan 1, 2025\n\n\nMartin Wood\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "posts/python_environments/index.html",
+    "href": "posts/python_environments/index.html",
+    "title": "Crib sheet: handling python environments through different tools",
+    "section": "",
+    "text": "Quick cribsheets for handling python environments through different tools\nCover art courtesy Google’s Nano Banana"
+  },
+  {
+    "objectID": "posts/python_environments/index.html#pip",
+    "href": "posts/python_environments/index.html#pip",
+    "title": "Crib sheet: handling python environments through different tools",
+    "section": "Pip",
+    "text": "Pip\npython3 -m venv .env                        # Create venv off whatever python version you call from in folder .env\nsource .env/bin/activate\npython -m pip install --update pip          # Bring pip up-to-date first\npip install -r requirements.txt             # install modules listed in requirements.txt\nPip documentation - requirements file format"
+  },
+  {
+    "objectID": "posts/python_environments/index.html#conda",
+    "href": "posts/python_environments/index.html#conda",
+    "title": "Crib sheet: handling python environments through different tools",
+    "section": "Conda",
+    "text": "Conda\nCreating it first time:\nconda create --name environment_name\nconda activate environment_name\nconda install numpy pandas pdfplumber ipykernel jupyter openpyxl  # installing like this out of laziness\nconda env export &gt; environment.yml                                # writing an environment file so I can properly restore it\nTo build the environment using the stored environment.yml:\nconda env create -f environment.yml                     # recreate the environment described in that environment\nconda activate environment_name                         # activate"
+  },
+  {
+    "objectID": "posts/python_environments/index.html#bonus-renv-r",
+    "href": "posts/python_environments/index.html#bonus-renv-r",
+    "title": "Crib sheet: handling python environments through different tools",
+    "section": "Bonus: renv (R)",
+    "text": "Bonus: renv (R)\ninstall.packages(\"renv\")           # Install environment manager\nrenv::init()                       # First run, create environment for project (current dir)\nrenv::activate()                   # Or activate after navigating to project\ninstall.packages(\"readr\")          # Install packages\nrenv::snapshot()                   # Store exact package configuration to renv.lock file\nrenv::restore()                    # Recreate environment from renv.lock file\nrenv::revert()                     # Revert environment to that specified in renv.lock file"
+  },
+  {
+    "objectID": "posts/review_SICP/index.html",
+    "href": "posts/review_SICP/index.html",
+    "title": "Book Notes: Structure and Interpretation of Computer Programs",
+    "section": "",
+    "text": "Cover art for book, Structure and Interpretation of Computer Programs\n\n\nOh dear lord the maths.\n\n\nMy current data science office is pretty driven, conveniently one of our number is a very experienced programmer and has offered to help guide us through reading Structure and Interpretation of Computer Programs (a helpful PDF version there). This book is reportedly a bit special, with a reputation for turning people’s brains around and change their view of programming. It’s also pretty old, dating from back when people really had to care about what they could fit into memory and how performant their algorithms were (as opposed to the Data Science approach of “Too slow eh? More cores/memory/VM’s/funding!”). The foreword begins:\n\nThis is the second edition SICP book, from Unofficial Texinfo Format. You are probably reading it in an Info hypertext browser, such as the Info mode of Emacs. You might alternatively be reading it TEX-formatted on your screen or printer, though that would be silly.\n\nIn hindsight this perfectly captured what I was in for - created by people who use Emacs and think formatted text is a sign of weakness…\nI’m one of the many people who are now kind of reversing into computer science, having used computational tools for data analysis before steadily sinking into more sophisticated programming tools as my problems became more complicated and my need to perform shadow IT around organisational limitations became more and more pressing. I suspect it’s a natural consequence of all modern companies accidentally becoming IT companies, whether they want to or not.\n\n\n\nShort version: While the actual text is very readable, the exercises were very much meant for people with a stronger background in maths. I studied a natural science, integration was considered a bit fancy. A lot of the (probably elegant) exercise questions in this book involve implementing some equation that would probably make perfect sense to me and be obviously relevant if I hadn’t spent my degree dripping acid on rocks to see if they fizzed.\nAs it is I was left staring at the question wondering if I’m supposed to care or if a “trigonometric identity” might just mean a triangle or something? Whatever. Thankfully our office’s tame wizard is well aware, and is able to help direct us to what we need to know and are meant to be drawing from sections and exercises. It’s also abundantly clear that this is a course textbook, meant to be drawn from by a teacher as needed. Knowing this is useful both in that it reassures me it’s ok to seek help and that I can occasionally skip an impenetrably mathematical exercise and lose nothing but knowledge of some weird and unusual number series. I’m ok with that.\nThe book is very much still worth working through - it leaves me knowing some more of the terminology and concepts I feel I’ve missed in my backwards slide into working with computers. A goal of mine is to steadily work through the curriculum set out by Teach Yourself Computer Science, which suggests getting through chapters 1 - 3 including exercises.\n\n\n\nHaving only just reached the end of Chapter 1, I’ve picked up lots of basics, but in more clearly defined detail than I’ve previously owned them. For example, the book has gone into detail on recursive vs iterative algorithms, and how to map from one to the other, and how they are executed by the interpreter. Terminology I didn’t know I needed or thought I understood from general knowledge has been clarified as something more specific in CS (Computer Science), like the difference between a recursive algorithm and a recursive process.\nThe insight into what interpreters think of/about the code I write, and the numerous illustrations of how execution of a more complex program folds out into a tree-like structure of executed primitive operations, are both giving me a view of how computers work that I may have seen before but is now far more explicit, and stands in attractive contrast to the many hands-on high level tutorials on applications of programming to things like data analysis that pay little attention to what is going on below the level of Pandas’ methods.\nAt a higher level, there’s also been some good discussion and examples in the book of proper abstraction; building procedures to perform specific, higher level tasks that are clear and focussed enough that once defined, you can use those without ever needing to reconsider their internal workings. Abstraction and modular code are ideas that’ll be old-hat to most people, but the\nAnd of course, now I know some Scheme! I have to admit its simplicity and lack of too much syntactic sugar (see, I know bigger words now!) make it a very nice language for demonstrating how the interpreter works through the instructions you’re feeding it. And being forced to be conscious of all those nested brackets assists your awareness of execution order.\n\n\n\nI’m using Racket, a descendant of scheme that I chose purely because I could easily download and install it on my Windows laptop, so that I could learn offline on trains (welcome to the North of England, we don’t trust in pervasive internet up here). I’ve been using that in conjunction with the PDF version of the book from MIT, because I’m old so I like that it looks like a textbook that way.\nI know others working through the book have been using online implementations of Scheme for simplicity and because our work laptops won’t trust us to install things, here’s one if you need it: try.scheme.org.\nFor myself, so far I’ve been copy-pasting code snippets over from the book and my notes like a pleb. In all of chapter 1, only once was I working on a compound procedure (big words again! Read: a small program with multiple functions) where I felt like using an IDE properly might help :P\n\n\n\nIt’s rare that my work either as a data scientist or as a data engineer has required CS knowledge - but on occassion, every few months or so, I find myself having to write something that is effectively performing a tree search to dig through weirdly stored logs. Or I need to perform matrix multiplication to create a speedier version of some geographic operation that geopandas takes hours on. On these weird issues I need to do actual programming and this book is good instruction and practice fodder for that.\nI know I’ve got a lot to learn on how to actually structure a project, at every level. A better understanding of how to abstract code, and when to do so, will be useful as I move to a few larger projects. At a fine level, learning more about the proper use of lexical scope and computational complexity will let me write clearer, simpler code that won’t hit “that won’t scale” gotcha’s."
+  },
+  {
+    "objectID": "posts/review_SICP/index.html#what",
+    "href": "posts/review_SICP/index.html#what",
+    "title": "Book Notes: Structure and Interpretation of Computer Programs",
+    "section": "",
+    "text": "My current data science office is pretty driven, conveniently one of our number is a very experienced programmer and has offered to help guide us through reading Structure and Interpretation of Computer Programs (a helpful PDF version there). This book is reportedly a bit special, with a reputation for turning people’s brains around and change their view of programming. It’s also pretty old, dating from back when people really had to care about what they could fit into memory and how performant their algorithms were (as opposed to the Data Science approach of “Too slow eh? More cores/memory/VM’s/funding!”). The foreword begins:\n\nThis is the second edition SICP book, from Unofficial Texinfo Format. You are probably reading it in an Info hypertext browser, such as the Info mode of Emacs. You might alternatively be reading it TEX-formatted on your screen or printer, though that would be silly.\n\nIn hindsight this perfectly captured what I was in for - created by people who use Emacs and think formatted text is a sign of weakness…\nI’m one of the many people who are now kind of reversing into computer science, having used computational tools for data analysis before steadily sinking into more sophisticated programming tools as my problems became more complicated and my need to perform shadow IT around organisational limitations became more and more pressing. I suspect it’s a natural consequence of all modern companies accidentally becoming IT companies, whether they want to or not."
+  },
+  {
+    "objectID": "posts/review_SICP/index.html#how-is-it-going",
+    "href": "posts/review_SICP/index.html#how-is-it-going",
+    "title": "Book Notes: Structure and Interpretation of Computer Programs",
+    "section": "",
+    "text": "Short version: While the actual text is very readable, the exercises were very much meant for people with a stronger background in maths. I studied a natural science, integration was considered a bit fancy. A lot of the (probably elegant) exercise questions in this book involve implementing some equation that would probably make perfect sense to me and be obviously relevant if I hadn’t spent my degree dripping acid on rocks to see if they fizzed.\nAs it is I was left staring at the question wondering if I’m supposed to care or if a “trigonometric identity” might just mean a triangle or something? Whatever. Thankfully our office’s tame wizard is well aware, and is able to help direct us to what we need to know and are meant to be drawing from sections and exercises. It’s also abundantly clear that this is a course textbook, meant to be drawn from by a teacher as needed. Knowing this is useful both in that it reassures me it’s ok to seek help and that I can occasionally skip an impenetrably mathematical exercise and lose nothing but knowledge of some weird and unusual number series. I’m ok with that.\nThe book is very much still worth working through - it leaves me knowing some more of the terminology and concepts I feel I’ve missed in my backwards slide into working with computers. A goal of mine is to steadily work through the curriculum set out by Teach Yourself Computer Science, which suggests getting through chapters 1 - 3 including exercises."
+  },
+  {
+    "objectID": "posts/review_SICP/index.html#what-are-you-learning",
+    "href": "posts/review_SICP/index.html#what-are-you-learning",
+    "title": "Book Notes: Structure and Interpretation of Computer Programs",
+    "section": "",
+    "text": "Having only just reached the end of Chapter 1, I’ve picked up lots of basics, but in more clearly defined detail than I’ve previously owned them. For example, the book has gone into detail on recursive vs iterative algorithms, and how to map from one to the other, and how they are executed by the interpreter. Terminology I didn’t know I needed or thought I understood from general knowledge has been clarified as something more specific in CS (Computer Science), like the difference between a recursive algorithm and a recursive process.\nThe insight into what interpreters think of/about the code I write, and the numerous illustrations of how execution of a more complex program folds out into a tree-like structure of executed primitive operations, are both giving me a view of how computers work that I may have seen before but is now far more explicit, and stands in attractive contrast to the many hands-on high level tutorials on applications of programming to things like data analysis that pay little attention to what is going on below the level of Pandas’ methods.\nAt a higher level, there’s also been some good discussion and examples in the book of proper abstraction; building procedures to perform specific, higher level tasks that are clear and focussed enough that once defined, you can use those without ever needing to reconsider their internal workings. Abstraction and modular code are ideas that’ll be old-hat to most people, but the\nAnd of course, now I know some Scheme! I have to admit its simplicity and lack of too much syntactic sugar (see, I know bigger words now!) make it a very nice language for demonstrating how the interpreter works through the instructions you’re feeding it. And being forced to be conscious of all those nested brackets assists your awareness of execution order."
+  },
+  {
+    "objectID": "posts/review_SICP/index.html#practical-notes",
+    "href": "posts/review_SICP/index.html#practical-notes",
+    "title": "Book Notes: Structure and Interpretation of Computer Programs",
+    "section": "",
+    "text": "I’m using Racket, a descendant of scheme that I chose purely because I could easily download and install it on my Windows laptop, so that I could learn offline on trains (welcome to the North of England, we don’t trust in pervasive internet up here). I’ve been using that in conjunction with the PDF version of the book from MIT, because I’m old so I like that it looks like a textbook that way.\nI know others working through the book have been using online implementations of Scheme for simplicity and because our work laptops won’t trust us to install things, here’s one if you need it: try.scheme.org.\nFor myself, so far I’ve been copy-pasting code snippets over from the book and my notes like a pleb. In all of chapter 1, only once was I working on a compound procedure (big words again! Read: a small program with multiple functions) where I felt like using an IDE properly might help :P"
+  },
+  {
+    "objectID": "posts/review_SICP/index.html#why-care",
+    "href": "posts/review_SICP/index.html#why-care",
+    "title": "Book Notes: Structure and Interpretation of Computer Programs",
+    "section": "",
+    "text": "It’s rare that my work either as a data scientist or as a data engineer has required CS knowledge - but on occassion, every few months or so, I find myself having to write something that is effectively performing a tree search to dig through weirdly stored logs. Or I need to perform matrix multiplication to create a speedier version of some geographic operation that geopandas takes hours on. On these weird issues I need to do actual programming and this book is good instruction and practice fodder for that.\nI know I’ve got a lot to learn on how to actually structure a project, at every level. A better understanding of how to abstract code, and when to do so, will be useful as I move to a few larger projects. At a fine level, learning more about the proper use of lexical scope and computational complexity will let me write clearer, simpler code that won’t hit “that won’t scale” gotcha’s."
+  },
+  {
     "objectID": "posts/jellyfin/index.html",
     "href": "posts/jellyfin/index.html",
     "title": "Jellyfin server - from DVD ripping to watching films in the bath",
@@ -75,187 +313,5 @@
     "title": "Reminding myself how to use Quarto to build this website",
     "section": "",
     "text": "I tend to just link to images on other people’s websites when discussing their software, figure the extra networking must do their SEO some good and saves me copying copyrighted images.\nIf I generate an image (2026 is weird) using just Gemini or something, it can’t seem to handle requests for lower res images or to downscale something it’s produced, which is pretty weak.\nSo here’s how to use imagemagick to squish an image at the command line:\nsudo apt install imagemagick\nmagick excel_rex_gemini.png -resize 1000x -quality 80 excel_rex_gemini_web.webp\nThe .webp file extension is a newfangled even more compressed format that saves a lot on filesize so apparently just a good idea by default: Google WebP page\nEasy to change to .png if suspicious."
-  },
-  {
-    "objectID": "posts/review_SICP/index.html",
-    "href": "posts/review_SICP/index.html",
-    "title": "Book Notes: Structure and Interpretation of Computer Programs",
-    "section": "",
-    "text": "Cover art for book, Structure and Interpretation of Computer Programs\n\n\nOh dear lord the maths.\n\n\nMy current data science office is pretty driven, conveniently one of our number is a very experienced programmer and has offered to help guide us through reading Structure and Interpretation of Computer Programs (a helpful PDF version there). This book is reportedly a bit special, with a reputation for turning people’s brains around and change their view of programming. It’s also pretty old, dating from back when people really had to care about what they could fit into memory and how performant their algorithms were (as opposed to the Data Science approach of “Too slow eh? More cores/memory/VM’s/funding!”). The foreword begins:\n\nThis is the second edition SICP book, from Unofficial Texinfo Format. You are probably reading it in an Info hypertext browser, such as the Info mode of Emacs. You might alternatively be reading it TEX-formatted on your screen or printer, though that would be silly.\n\nIn hindsight this perfectly captured what I was in for - created by people who use Emacs and think formatted text is a sign of weakness…\nI’m one of the many people who are now kind of reversing into computer science, having used computational tools for data analysis before steadily sinking into more sophisticated programming tools as my problems became more complicated and my need to perform shadow IT around organisational limitations became more and more pressing. I suspect it’s a natural consequence of all modern companies accidentally becoming IT companies, whether they want to or not.\n\n\n\nShort version: While the actual text is very readable, the exercises were very much meant for people with a stronger background in maths. I studied a natural science, integration was considered a bit fancy. A lot of the (probably elegant) exercise questions in this book involve implementing some equation that would probably make perfect sense to me and be obviously relevant if I hadn’t spent my degree dripping acid on rocks to see if they fizzed.\nAs it is I was left staring at the question wondering if I’m supposed to care or if a “trigonometric identity” might just mean a triangle or something? Whatever. Thankfully our office’s tame wizard is well aware, and is able to help direct us to what we need to know and are meant to be drawing from sections and exercises. It’s also abundantly clear that this is a course textbook, meant to be drawn from by a teacher as needed. Knowing this is useful both in that it reassures me it’s ok to seek help and that I can occasionally skip an impenetrably mathematical exercise and lose nothing but knowledge of some weird and unusual number series. I’m ok with that.\nThe book is very much still worth working through - it leaves me knowing some more of the terminology and concepts I feel I’ve missed in my backwards slide into working with computers. A goal of mine is to steadily work through the curriculum set out by Teach Yourself Computer Science, which suggests getting through chapters 1 - 3 including exercises.\n\n\n\nHaving only just reached the end of Chapter 1, I’ve picked up lots of basics, but in more clearly defined detail than I’ve previously owned them. For example, the book has gone into detail on recursive vs iterative algorithms, and how to map from one to the other, and how they are executed by the interpreter. Terminology I didn’t know I needed or thought I understood from general knowledge has been clarified as something more specific in CS (Computer Science), like the difference between a recursive algorithm and a recursive process.\nThe insight into what interpreters think of/about the code I write, and the numerous illustrations of how execution of a more complex program folds out into a tree-like structure of executed primitive operations, are both giving me a view of how computers work that I may have seen before but is now far more explicit, and stands in attractive contrast to the many hands-on high level tutorials on applications of programming to things like data analysis that pay little attention to what is going on below the level of Pandas’ methods.\nAt a higher level, there’s also been some good discussion and examples in the book of proper abstraction; building procedures to perform specific, higher level tasks that are clear and focussed enough that once defined, you can use those without ever needing to reconsider their internal workings. Abstraction and modular code are ideas that’ll be old-hat to most people, but the\nAnd of course, now I know some Scheme! I have to admit its simplicity and lack of too much syntactic sugar (see, I know bigger words now!) make it a very nice language for demonstrating how the interpreter works through the instructions you’re feeding it. And being forced to be conscious of all those nested brackets assists your awareness of execution order.\n\n\n\nI’m using Racket, a descendant of scheme that I chose purely because I could easily download and install it on my Windows laptop, so that I could learn offline on trains (welcome to the North of England, we don’t trust in pervasive internet up here). I’ve been using that in conjunction with the PDF version of the book from MIT, because I’m old so I like that it looks like a textbook that way.\nI know others working through the book have been using online implementations of Scheme for simplicity and because our work laptops won’t trust us to install things, here’s one if you need it: try.scheme.org.\nFor myself, so far I’ve been copy-pasting code snippets over from the book and my notes like a pleb. In all of chapter 1, only once was I working on a compound procedure (big words again! Read: a small program with multiple functions) where I felt like using an IDE properly might help :P\n\n\n\nIt’s rare that my work either as a data scientist or as a data engineer has required CS knowledge - but on occassion, every few months or so, I find myself having to write something that is effectively performing a tree search to dig through weirdly stored logs. Or I need to perform matrix multiplication to create a speedier version of some geographic operation that geopandas takes hours on. On these weird issues I need to do actual programming and this book is good instruction and practice fodder for that.\nI know I’ve got a lot to learn on how to actually structure a project, at every level. A better understanding of how to abstract code, and when to do so, will be useful as I move to a few larger projects. At a fine level, learning more about the proper use of lexical scope and computational complexity will let me write clearer, simpler code that won’t hit “that won’t scale” gotcha’s."
-  },
-  {
-    "objectID": "posts/review_SICP/index.html#what",
-    "href": "posts/review_SICP/index.html#what",
-    "title": "Book Notes: Structure and Interpretation of Computer Programs",
-    "section": "",
-    "text": "My current data science office is pretty driven, conveniently one of our number is a very experienced programmer and has offered to help guide us through reading Structure and Interpretation of Computer Programs (a helpful PDF version there). This book is reportedly a bit special, with a reputation for turning people’s brains around and change their view of programming. It’s also pretty old, dating from back when people really had to care about what they could fit into memory and how performant their algorithms were (as opposed to the Data Science approach of “Too slow eh? More cores/memory/VM’s/funding!”). The foreword begins:\n\nThis is the second edition SICP book, from Unofficial Texinfo Format. You are probably reading it in an Info hypertext browser, such as the Info mode of Emacs. You might alternatively be reading it TEX-formatted on your screen or printer, though that would be silly.\n\nIn hindsight this perfectly captured what I was in for - created by people who use Emacs and think formatted text is a sign of weakness…\nI’m one of the many people who are now kind of reversing into computer science, having used computational tools for data analysis before steadily sinking into more sophisticated programming tools as my problems became more complicated and my need to perform shadow IT around organisational limitations became more and more pressing. I suspect it’s a natural consequence of all modern companies accidentally becoming IT companies, whether they want to or not."
-  },
-  {
-    "objectID": "posts/review_SICP/index.html#how-is-it-going",
-    "href": "posts/review_SICP/index.html#how-is-it-going",
-    "title": "Book Notes: Structure and Interpretation of Computer Programs",
-    "section": "",
-    "text": "Short version: While the actual text is very readable, the exercises were very much meant for people with a stronger background in maths. I studied a natural science, integration was considered a bit fancy. A lot of the (probably elegant) exercise questions in this book involve implementing some equation that would probably make perfect sense to me and be obviously relevant if I hadn’t spent my degree dripping acid on rocks to see if they fizzed.\nAs it is I was left staring at the question wondering if I’m supposed to care or if a “trigonometric identity” might just mean a triangle or something? Whatever. Thankfully our office’s tame wizard is well aware, and is able to help direct us to what we need to know and are meant to be drawing from sections and exercises. It’s also abundantly clear that this is a course textbook, meant to be drawn from by a teacher as needed. Knowing this is useful both in that it reassures me it’s ok to seek help and that I can occasionally skip an impenetrably mathematical exercise and lose nothing but knowledge of some weird and unusual number series. I’m ok with that.\nThe book is very much still worth working through - it leaves me knowing some more of the terminology and concepts I feel I’ve missed in my backwards slide into working with computers. A goal of mine is to steadily work through the curriculum set out by Teach Yourself Computer Science, which suggests getting through chapters 1 - 3 including exercises."
-  },
-  {
-    "objectID": "posts/review_SICP/index.html#what-are-you-learning",
-    "href": "posts/review_SICP/index.html#what-are-you-learning",
-    "title": "Book Notes: Structure and Interpretation of Computer Programs",
-    "section": "",
-    "text": "Having only just reached the end of Chapter 1, I’ve picked up lots of basics, but in more clearly defined detail than I’ve previously owned them. For example, the book has gone into detail on recursive vs iterative algorithms, and how to map from one to the other, and how they are executed by the interpreter. Terminology I didn’t know I needed or thought I understood from general knowledge has been clarified as something more specific in CS (Computer Science), like the difference between a recursive algorithm and a recursive process.\nThe insight into what interpreters think of/about the code I write, and the numerous illustrations of how execution of a more complex program folds out into a tree-like structure of executed primitive operations, are both giving me a view of how computers work that I may have seen before but is now far more explicit, and stands in attractive contrast to the many hands-on high level tutorials on applications of programming to things like data analysis that pay little attention to what is going on below the level of Pandas’ methods.\nAt a higher level, there’s also been some good discussion and examples in the book of proper abstraction; building procedures to perform specific, higher level tasks that are clear and focussed enough that once defined, you can use those without ever needing to reconsider their internal workings. Abstraction and modular code are ideas that’ll be old-hat to most people, but the\nAnd of course, now I know some Scheme! I have to admit its simplicity and lack of too much syntactic sugar (see, I know bigger words now!) make it a very nice language for demonstrating how the interpreter works through the instructions you’re feeding it. And being forced to be conscious of all those nested brackets assists your awareness of execution order."
-  },
-  {
-    "objectID": "posts/review_SICP/index.html#practical-notes",
-    "href": "posts/review_SICP/index.html#practical-notes",
-    "title": "Book Notes: Structure and Interpretation of Computer Programs",
-    "section": "",
-    "text": "I’m using Racket, a descendant of scheme that I chose purely because I could easily download and install it on my Windows laptop, so that I could learn offline on trains (welcome to the North of England, we don’t trust in pervasive internet up here). I’ve been using that in conjunction with the PDF version of the book from MIT, because I’m old so I like that it looks like a textbook that way.\nI know others working through the book have been using online implementations of Scheme for simplicity and because our work laptops won’t trust us to install things, here’s one if you need it: try.scheme.org.\nFor myself, so far I’ve been copy-pasting code snippets over from the book and my notes like a pleb. In all of chapter 1, only once was I working on a compound procedure (big words again! Read: a small program with multiple functions) where I felt like using an IDE properly might help :P"
-  },
-  {
-    "objectID": "posts/review_SICP/index.html#why-care",
-    "href": "posts/review_SICP/index.html#why-care",
-    "title": "Book Notes: Structure and Interpretation of Computer Programs",
-    "section": "",
-    "text": "It’s rare that my work either as a data scientist or as a data engineer has required CS knowledge - but on occassion, every few months or so, I find myself having to write something that is effectively performing a tree search to dig through weirdly stored logs. Or I need to perform matrix multiplication to create a speedier version of some geographic operation that geopandas takes hours on. On these weird issues I need to do actual programming and this book is good instruction and practice fodder for that.\nI know I’ve got a lot to learn on how to actually structure a project, at every level. A better understanding of how to abstract code, and when to do so, will be useful as I move to a few larger projects. At a fine level, learning more about the proper use of lexical scope and computational complexity will let me write clearer, simpler code that won’t hit “that won’t scale” gotcha’s."
-  },
-  {
-    "objectID": "posts/python_environments/index.html",
-    "href": "posts/python_environments/index.html",
-    "title": "Crib sheet: handling python environments through different tools",
-    "section": "",
-    "text": "Quick cribsheets for handling python environments through different tools"
-  },
-  {
-    "objectID": "posts/python_environments/index.html#pip",
-    "href": "posts/python_environments/index.html#pip",
-    "title": "Crib sheet: handling python environments through different tools",
-    "section": "Pip",
-    "text": "Pip\npython3 -m venv .env                        # Create venv off whatever python version you call from in folder .env\nsource .env/bin/activate\npython -m pip install --update pip          # Bring pip up-to-date first\npip install -r requirements.txt             # install modules listed in requirements.txt\nPip documentation - requirements file format"
-  },
-  {
-    "objectID": "posts/python_environments/index.html#conda",
-    "href": "posts/python_environments/index.html#conda",
-    "title": "Crib sheet: handling python environments through different tools",
-    "section": "Conda",
-    "text": "Conda\nCreating it first time:\nconda create --name environment_name\nconda activate environment_name\nconda install numpy pandas pdfplumber ipykernel jupyter openpyxl  # installing like this out of laziness\nconda env export &gt; environment.yml                                # writing an environment file so I can properly restore it\nTo build the environment using the stored environment.yml:\nconda env create -f environment.yml                     # recreate the environment described in that environment\nconda activate environment_name                         # activate"
-  },
-  {
-    "objectID": "posts/python_environments/index.html#bonus-renv-r",
-    "href": "posts/python_environments/index.html#bonus-renv-r",
-    "title": "Crib sheet: handling python environments through different tools",
-    "section": "Bonus: renv (R)",
-    "text": "Bonus: renv (R)\ninstall.packages(\"renv\")           # Install environment manager\nrenv::init()                       # First run, create environment for project (current dir)\nrenv::activate()                   # Or activate after navigating to project\ninstall.packages(\"readr\")          # Install packages\nrenv::snapshot()                   # Store exact package configuration to renv.lock file\nrenv::restore()                    # Recreate environment from renv.lock file\nrenv::revert()                     # Revert environment to that specified in renv.lock file"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Martin Trying to Remember Things",
-    "section": "",
-    "text": "Reminding myself how to use Quarto to build this website\n\n\n\ntutorial\n\n\n\n\n\n\n\n\n\nMay 26, 2026\n\n\nMartin Wood\n\n\n\n\n\n\n\n\n\n\n\n\nSave csv file from Pandas that Excel won’t ruin\n\n\n\nsnippet\n\n\n\n\n\n\n\n\n\nMay 26, 2026\n\n\nMartin Wood\n\n\n\n\n\n\n\n\n\n\n\n\nJellyfin server - from DVD ripping to watching films in the bath\n\n\n\ntutorial\n\n\n\n\n\n\n\n\n\nMay 26, 2026\n\n\nMartin Wood\n\n\n\n\n\n\n\n\n\n\n\n\nCrib sheet: handling python environments through different tools\n\n\n\nsnippet\n\n\n\n\n\n\n\n\n\nJan 28, 2026\n\n\nMartin Wood\n\n\n\n\n\n\n\n\n\n\n\n\nMaking a Gantt Chart in Python\n\n\n\nsnippet\n\n\n\n\n\n\n\n\n\nMay 30, 2025\n\n\nMartin Wood\n\n\n\n\n\n\n\n\n\n\n\n\nBook Notes: Data Science at the Command Line\n\n\n\nbook notes\n\n\n\n\n\n\n\n\n\nMay 18, 2025\n\n\nMartin Wood\n\n\n\n\n\n\n\n\n\n\n\n\nBook Notes: Structure and Interpretation of Computer Programs\n\n\n\nbook notes\n\n\n\n\n\n\n\n\n\nApr 4, 2025\n\n\nMartin Wood\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nJan 1, 2025\n\n\nMartin Wood\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About Martin",
-    "section": "",
-    "text": "Martin is a “technologist” currently working in the public sector as a data scientist, with an interest in all things tech, AI and cyberpunk! His office time is spent applying NLP and LLM tools in the field of information retrieval, getting piles of government records and administrative data to talk back to him. There’s a side of dashboarding (RShiny), Pythonic web development (Flask) and the occasional foray into the Azure ecosystem. Currently there’s a lot of data processing and statistics (R).\nThere are also the weird project requests, building tools to figure out where the buses are, or what just happened to the jobs market.\nHis free time is spent playing co-op PC games, reading bad sci-fi, hiking and camping."
-  },
-  {
-    "objectID": "posts/post_gantt/index.html",
-    "href": "posts/post_gantt/index.html",
-    "title": "Making a Gantt Chart in Python",
-    "section": "",
-    "text": "Code for generating Gantt Charts, pretty ones, in Plotly.\nRead the original Plotly examples if you want to get started marginally quicker, and to see more examples of variants of these plots. Mines got some extra plotly arguments and a marginally more complete pile of code at the end.\nUses Python, Pandas and Plotly. The project has two logical components; creating a suitable dataframe representation of the tasks to be completed, and plotting that. Simple! Credit to this Plotly guide for providing all the code I’m going to adapt. The only real change I need is the ability to visualise dependencies between tasks.\nMy repo for this\n\n\n\nExample Gantt chart visualisation"
-  },
-  {
-    "objectID": "posts/post_gantt/index.html#what",
-    "href": "posts/post_gantt/index.html#what",
-    "title": "Making a Gantt Chart in Python",
-    "section": "",
-    "text": "Code for generating Gantt Charts, pretty ones, in Plotly.\nRead the original Plotly examples if you want to get started marginally quicker, and to see more examples of variants of these plots. Mines got some extra plotly arguments and a marginally more complete pile of code at the end.\nUses Python, Pandas and Plotly. The project has two logical components; creating a suitable dataframe representation of the tasks to be completed, and plotting that. Simple! Credit to this Plotly guide for providing all the code I’m going to adapt. The only real change I need is the ability to visualise dependencies between tasks.\nMy repo for this\n\n\n\nExample Gantt chart visualisation"
-  },
-  {
-    "objectID": "posts/post_gantt/index.html#why",
-    "href": "posts/post_gantt/index.html#why",
-    "title": "Making a Gantt Chart in Python",
-    "section": "Why?",
-    "text": "Why?\nGantt charts are boring and I dislike excel intensely so I’m going to build this instead. This is probably not the best approach. The best approach would be something that integrates with your DevOps platform, but I don’t know any and am not currently working with one ;)\nA second best approach would be dedicated software, there seem to be a lot of free Gantt chart generators available. I’ve used the ugly but standalone (and free) GanttProject before, which nicely handles dependencies between tasks and produces functional output. It’s a good quick option.\nBut if I build it in Python I will have a tool I can easily point at different underlying data for each project I need one for. Plus Plotly gives me scalable html output with mouseover text, which is pretty handy when there’s a lot of optional context to tasks."
-  },
-  {
-    "objectID": "posts/post_gantt/index.html#creating-the-data",
-    "href": "posts/post_gantt/index.html#creating-the-data",
-    "title": "Making a Gantt Chart in Python",
-    "section": "Creating the data",
-    "text": "Creating the data\nScript expects a csv file with columns to describe the tasks and their start and end dates. I’ve added one for dependencies, but it’s just a text column that gets displayed really.\n\n\n\nTask\nStart\nFinish\nDependencies\nResource\n\n\n\n\n“Job A”\n‘2025-06-01’\n‘2025-08-20’\n\nBill\n\n\n“Job B”\n‘2025-08-20’\n‘2025-11-28’\n‘Job A’\nBen\n\n\n“Job C”\n‘2025-09-28’\n‘2025-11-28’\n‘Job A’\nBill\n\n\nJob D”\n‘2025-12-01’\n‘2026-01-28’\n‘Job B’\nBill\n\n\n“Job E”\n‘2025-12-01’\n‘2026-01-28’\n‘Job C’\nBen"
-  },
-  {
-    "objectID": "posts/post_gantt/index.html#plotting-using-plotly-expresss-timeline-method",
-    "href": "posts/post_gantt/index.html#plotting-using-plotly-expresss-timeline-method",
-    "title": "Making a Gantt Chart in Python",
-    "section": "Plotting using plotly express’s timeline method",
-    "text": "Plotting using plotly express’s timeline method\nimport plotly.express as px\nimport plotly.graph_objects as go\n\nimport numpy as np\nimport pandas as pd\n\n\n# Load the data (see section above)\ndf = pd.read_csv(\"example.csv\", dtype=str)\n\n# Create the labelling for the task blocks (I want to see task dependencies)\ndf['Labelling'] = np.where(\n    df['Dependencies'].isnull(),\n    df['Task'],\n    df['Task'] + \", Dependencies: \" + df[\"Dependencies\"]\n)\n\n# Order as I want plotted\ndf = df.sort_values(\"Start\", ascending=False)\n\n# Plot\nfig = px.timeline(\n    df,\n    x_start=\"Start\",\n    x_end=\"Finish\",\n    y=\"Task\",\n    color=\"Resource\",\n    text=\"Labelling\",\n    hover_name=\"Resource\",\n    hover_data={\"Resource\": False, \"Start\": True, \"Finish\": True, \"Labelling\": False},\n    title=\"Gantt Chart\"\n)\n\nfig.show()"
-  },
-  {
-    "objectID": "posts/review_DSATCL/index.html",
-    "href": "posts/review_DSATCL/index.html",
-    "title": "Book Notes: Data Science at the Command Line",
-    "section": "",
-    "text": "Basics of building data pipelines using command line tools. On the basics the book goes into a little detail on the difference between binary executables (machine code), shell builtin’s (like ls or pwd, interpreted scripts (writing things in python or other languages), shell functions and aliases.\nAvailable free to read online here\nBook mostly focusses on interpreted scripts, shell functions and aliases, used to compose our own commandline tools and workflows.\nI’m using wsl2 to run these things, using the list of command line tools at the end of the book to find out what to install, because it’s useful to see what I need to do to get it running on other machines. But the docker image is pretty easy to set up as a speedier way to start! Honestly, it uses so many installed extras that I would recommend the docker route in hindsight.\nExplains how to pipe these together, which was handy for me because a) suddenly what R tidyverse is trying to do makes more sense and b) a lot of little commands in the scriptier or base parts of Python and R suddenly make far more sense! Eg; grepl in R from the grep builtin (is it builtin?), head…\n$ head -n 3 movies.txt\nMatrix\nStar Wars\nHome Alone\nFirst line of a script is what defines what executes it, eg for bash, R and Python respectively;\n#!/bin/bash\n#!/usr/bin/env Rscript\n#!/usr/bin/env python3"
-  },
-  {
-    "objectID": "posts/review_DSATCL/index.html#the-book",
-    "href": "posts/review_DSATCL/index.html#the-book",
-    "title": "Book Notes: Data Science at the Command Line",
-    "section": "",
-    "text": "Basics of building data pipelines using command line tools. On the basics the book goes into a little detail on the difference between binary executables (machine code), shell builtin’s (like ls or pwd, interpreted scripts (writing things in python or other languages), shell functions and aliases.\nAvailable free to read online here\nBook mostly focusses on interpreted scripts, shell functions and aliases, used to compose our own commandline tools and workflows.\nI’m using wsl2 to run these things, using the list of command line tools at the end of the book to find out what to install, because it’s useful to see what I need to do to get it running on other machines. But the docker image is pretty easy to set up as a speedier way to start! Honestly, it uses so many installed extras that I would recommend the docker route in hindsight.\nExplains how to pipe these together, which was handy for me because a) suddenly what R tidyverse is trying to do makes more sense and b) a lot of little commands in the scriptier or base parts of Python and R suddenly make far more sense! Eg; grepl in R from the grep builtin (is it builtin?), head…\n$ head -n 3 movies.txt\nMatrix\nStar Wars\nHome Alone\nFirst line of a script is what defines what executes it, eg for bash, R and Python respectively;\n#!/bin/bash\n#!/usr/bin/env Rscript\n#!/usr/bin/env python3"
-  },
-  {
-    "objectID": "posts/review_DSATCL/index.html#tools",
-    "href": "posts/review_DSATCL/index.html#tools",
-    "title": "Book Notes: Data Science at the Command Line",
-    "section": "Tools",
-    "text": "Tools\nThe Unix philosophy (Art of Unix Programming is a great text). Then pipe between those (good, focussed) tools. Based on management of stdin, stdout, stderr. If you really need an example of this, type rev and play around.\nA very short example, counting the number of chapters in Adventures in Wonderland (including downloading with curl)\n$ curl -s \"https://www.gutenberg.org/files/11/11-0.txt\" |\n&gt; grep \" CHAPTER\" |\n&gt; wc -l\n12\n(And use &gt; and &gt;&gt; to output to a file if you want, or read from those files with cat).\n2&gt; redirects the error messages to files, used this in Data Engineering at least once while debugging something long-running in an inadvisably hands-on manner in Azure.\nLots of the tools used are actually non-standard bits created by Jeronen or others - though that these can be created, distributed and reused so easily is kind of the point. Jeroen’s own tools - dsutls\n\nHandy bit for installing the tools I’ve been playing with:\nsudo apt install cowsay rust-bat moreutils csvkit\nSome things I’ve found super useful: csvlook/csv2md, batcat (in book as “bat” but there’s a name clash when I install on 24.04), tee for pushing out intermediate results. And of course, I always forget “man” is an option because we have the internet now… and it turns out I can press “/” to search these pages! Probably other things that open in this reader mode! jq super useful when dealing with web data/API’s/config files. Literally never heard of the tldr command…\ncsvlook -I prevents type inference and formatting eg; of numbers (interpreted years as numbers and added thousand commas without this).\n\ncsvgrep for searching/filtering csv\njq for working through json keys\n\n$ &lt; wikimedia-stream-sample sed -n 's/^data: //p' |\n&gt; jq 'select(.type == \"edit\" and .server_name == \"en.wikipedia.org\") | .title'"
-  },
-  {
-    "objectID": "posts/review_DSATCL/index.html#making-scripts",
-    "href": "posts/review_DSATCL/index.html#making-scripts",
-    "title": "Book Notes: Data Science at the Command Line",
-    "section": "Making scripts",
-    "text": "Making scripts\nFor example, here’s a surprisingly sophisticated bash script:\nSee this page\ncurl -sL \"https://www.gutenberg.org/files/11/11-0.txt\" |\n&gt; tr '[:upper:]' '[:lower:]' |\n&gt; grep -oE \"[a-z\\']{2,}\" |\n&gt; sort |\n&gt; uniq -c |\n&gt; sort -nr |\n&gt; head -n 10\nJust start writing your commands, if no input is defined in your script, will take from stdin, which means you can pipe stuff at it. Defining arguments is simple too. Names them rather than using directly for readability.\nSee example here"
-  },
-  {
-    "objectID": "posts/review_DSATCL/index.html#documentation-and-security",
-    "href": "posts/review_DSATCL/index.html#documentation-and-security",
-    "title": "Book Notes: Data Science at the Command Line",
-    "section": "Documentation and security",
-    "text": "Documentation and security\nIt mentions docopt as a tool for adding help docs? Should look in to that. Also ShellCheck for scanning bash code for issues/vulnerabilities."
-  },
-  {
-    "objectID": "posts/review_DSATCL/index.html#thoughts",
-    "href": "posts/review_DSATCL/index.html#thoughts",
-    "title": "Book Notes: Data Science at the Command Line",
-    "section": "Thoughts",
-    "text": "Thoughts\n\nBook is mostly useful for learning bash/shell/zsh/unix if you don’t know it already, that’s me for sure, probably not essential. Also, the command line is absolutely the kind of thing that’s so well documented that AI will be brilliant at it but who cares about that.\nI like that he’s fairly casual about not explaining every flag, command and use in the book, you need to go look things up if you want details and that’s always a good learning mechanism.\nThere are definitely tools in here I’m going to abuse - curl, weirdly, I just find more elegant than messing with python requests, and coupled with jq and csv type tools I can write something that’ll just work in a lot of places (read: VM’s in Azure) without having to mess around with venv. I also love being able to turn csv into markdown tables though I bet that exists inside Python!\nI like that he uses Nano, I know clever editors based on keyboards and nothing but keyboards exist, and I will never have time to care. Actual typing is not the least efficient part of my day.\nI notice also that for applications for which tools already exist, the python version is more verbose (albeit possibly more readable? I’m not confident on that)\nThe continuous allowance for streaming data is really interesting also, not something I’ve ever had to consider as a “research” data scientist"
-  },
-  {
-    "objectID": "posts/welcome/index.html",
-    "href": "posts/welcome/index.html",
-    "title": "Welcome To My Blog",
-    "section": "",
-    "text": "And so I’ve stolen the example/template post. Anyway, intending to use this to record bits and pieces of what I learn, mostly for my sake."
-  },
-  {
-    "objectID": "posts/welcome/index.html#made-with-quarto",
-    "href": "posts/welcome/index.html#made-with-quarto",
-    "title": "Welcome To My Blog",
-    "section": "Made with Quarto",
-    "text": "Made with Quarto\nDownload Quarto\nQuarto (blog) guidance\nGithub pages guidance\nquarto render\nquarto publish"
-  },
-  {
-    "objectID": "posts/pandas_excel/index.html",
-    "href": "posts/pandas_excel/index.html",
-    "title": "Save csv file from Pandas that Excel won’t ruin",
-    "section": "",
-    "text": "Saving files that Excel won’t ruin\nDeal with a lot of columns that look like integers but are actually ID columns that can have leading zeroes.\nI also deal with a lot of human text with special characters, when saved in a csv file in UTF-8 as normal, Excel often fails to detect and correctly render the UTF-8 formatting due to being generally terrible software.\nHow to save a file (from Python) that excel will open, interpret and display correctly with these problems:\nimport csv\nimport pandas as pd\n\ndf = ...\n\n# Excel will interpret cells that start with a '-' as formulas\ndf['some_field'] = df['some_field'].str.replace(\"- \", \"\")\n\ndf.to_csv(\n\"data/output/saved_file.csv\", \nquoting=csv.QUOTE_NONNUMERIC,                   # Quote all non-numeric fields in the output file, which forces excel to read as string\nencoding=\"utf-8-sig\",                           # An encoding that adds a UTF-8 BOM (Byte Order Mark) that tells excel the doc is in UTF-8\nindex=False                                     # Don't add a column for the index, only need this if your index is meaningless\n)"
   }
 ]

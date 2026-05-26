@@ -22,15 +22,45 @@ from the command line.
 
 [Github pages guidance](https://quarto.org/docs/publishing/github-pages.html)
 
-## Before publishing
+## Commands
+
+### Before publishing
+
 ```bash
 quarto preview
 ```
 
 Renders the website and serves it up locally so you can see what you just created 
 
-## To render and publish up once ready
+### To render and publish up once ready
+
 ```bash
 quarto render
 quarto publish
 ```
+
+
+## Squishing images
+
+I tend to just link to images on other people's websites when discussing their software,
+figure the extra networking must do their SEO some good and saves me copying copyrighted
+images.
+
+If I generate an image (2026 is weird) using just Gemini or something, it can't seem to
+handle requests for lower res images or to downscale something it's produced, which is
+pretty weak.
+
+So here's how to use imagemagick to squish an image at the command line:
+
+```bash
+sudo apt install imagemagick
+```
+
+```bash
+magick excel_rex_gemini.png -resize 1000x -quality 80 excel_rex_gemini_web.webp
+```
+
+The `.webp` file extension is a newfangled even more compressed format that saves
+a lot on filesize so apparently just a good idea by default:  [Google WebP page](https://developers.google.com/speed/webp)
+
+Easy to change to `.png` if suspicious.

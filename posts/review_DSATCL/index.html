@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.31">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -11,6 +11,9 @@
 
 <title>Book Notes: Data Science at the Command Line – memex</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -73,10 +76,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-8ef56b68f8fa1e9d2ba328e99e439f80.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-79f3260c79a6e04ae062afd4e407ac4e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-2fee8176d83b8b83b3f52c1bb3497846.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -198,50 +201,50 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Book mostly focusses on interpreted scripts, shell functions and aliases, used to compose our own commandline tools and workflows.</p>
 <p>I’m using <a href="https://learn.microsoft.com/en-us/windows/wsl/install">wsl2</a> to run these things, using the list of command line tools at the end of the book to find out what to install, because it’s useful to see what I need to do to get it running on other machines. But the docker image is pretty easy to set up as a speedier way to start! Honestly, it uses so many installed extras that I would recommend the docker route in hindsight.</p>
 <p>Explains how to pipe these together, which was handy for me because a) suddenly what R tidyverse is trying to do makes more sense and b) a lot of little commands in the scriptier or base parts of Python and R suddenly make far more sense! Eg; grepl in R from the <code>grep</code> builtin (is it builtin?), <code>head</code>…</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> head <span class="at">-n</span> 3 movies.txt</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> head <span class="at">-n</span> 3 movies.txt</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Matrix</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Star</span> Wars</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Home</span> Alone</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Home</span> Alone</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>First line of a script is what defines what executes it, eg for bash, R and Python respectively;</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env Rscript</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python3</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="tools" class="level2">
 <h2 class="anchored" data-anchor-id="tools">Tools</h2>
 <p>The Unix philosophy (Art of Unix Programming is a great text). Then pipe between those (good, focussed) tools. Based on management of stdin, stdout, stderr. If you really need an example of this, type <code>rev</code> and play around.</p>
 <p>A very short example, counting the number of chapters in Adventures in Wonderland (including downloading with curl)</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> curl <span class="at">-s</span> <span class="st">"https://www.gutenberg.org/files/11/11-0.txt"</span> <span class="kw">|</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> curl <span class="at">-s</span> <span class="st">"https://www.gutenberg.org/files/11/11-0.txt"</span> <span class="kw">|</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> grep <span class="st">" CHAPTER"</span> <span class="kw">|</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> wc <span class="ex">-l</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ex">12</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ex">12</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>(And use <code>&gt;</code> and <code>&gt;&gt;</code> to output to a file if you want, or read from those files with <code>cat</code>).</p>
 <p><code>2&gt;</code> redirects the error messages to files, used this in Data Engineering at least once while debugging something long-running in an inadvisably hands-on manner in Azure.</p>
 <p>Lots of the tools used are actually non-standard bits created by Jeronen or others - though that these can be created, distributed and reused so easily is kind of the point. <a href="https://github.com/jeroenjanssens/dsutils">Jeroen’s own tools - dsutls</a></p>
 <section id="handy-bit-for-installing-the-tools-ive-been-playing-with" class="level3">
 <h3 class="anchored" data-anchor-id="handy-bit-for-installing-the-tools-ive-been-playing-with">Handy bit for installing the tools I’ve been playing with:</h3>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install cowsay rust-bat moreutils csvkit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install cowsay rust-bat moreutils csvkit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Some things I’ve found super useful: csvlook/csv2md, batcat (in book as “bat” but there’s a name clash when I install on 24.04), tee for pushing out intermediate results. And of course, I always forget “man” is an option because we have the internet now… and it turns out I can press “/” to search these pages! Probably other things that open in this reader mode! jq super useful when dealing with web data/API’s/config files. Literally never heard of the <code>tldr</code> command…</p>
 <p><code>csvlook -I</code> prevents type inference and formatting eg; of numbers (interpreted years as numbers and added thousand commas without this).</p>
 <ul>
 <li>csvgrep for searching/filtering csv</li>
 <li>jq for working through json keys</li>
 </ul>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> <span class="op">&lt;</span> wikimedia-stream-sample sed <span class="at">-n</span> <span class="st">'s/^data: //p'</span> <span class="kw">|</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> jq <span class="st">'select(.type == "edit" and .server_name == "en.wikipedia.org") | .title'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> <span class="op">&lt;</span> wikimedia-stream-sample sed <span class="at">-n</span> <span class="st">'s/^data: //p'</span> <span class="kw">|</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> jq <span class="st">'select(.type == "edit" and .server_name == "en.wikipedia.org") | .title'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 <section id="making-scripts" class="level2">
 <h2 class="anchored" data-anchor-id="making-scripts">Making scripts</h2>
 <p>For example, here’s a surprisingly sophisticated bash script:</p>
 <p><a href="https://jeroenjanssens.com/dsatcl/chapter-4-creating-command-line-tools">See this page</a></p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-sL</span> <span class="st">"https://www.gutenberg.org/files/11/11-0.txt"</span> <span class="kw">|</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-sL</span> <span class="st">"https://www.gutenberg.org/files/11/11-0.txt"</span> <span class="kw">|</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> tr <span class="st">'[:upper:]'</span> <span class="st">'[:lower:]'</span> <span class="kw">|</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> grep <span class="ex">-oE</span> <span class="st">"[a-z\']{2,}"</span> <span class="kw">|</span></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> sort <span class="kw">|</span></span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> uniq <span class="ex">-c</span> <span class="kw">|</span></span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> sort <span class="ex">-nr</span> <span class="kw">|</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> head <span class="ex">-n</span> 10</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> head <span class="ex">-n</span> 10</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Just start writing your commands, if no input is defined in your script, will take from stdin, which means you can pipe stuff at it. Defining arguments is simple too. Names them rather than using directly for readability.</p>
 <p><a href="https://jeroenjanssens.com/dsatcl/chapter-4-creating-command-line-tools#step-5-add-arguments">See example here</a></p>
 </section>
@@ -315,13 +318,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

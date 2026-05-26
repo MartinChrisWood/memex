@@ -20,15 +20,13 @@ If like me you found the numerical codes used for permissions fairly confusing, 
 on [how they work under linux courtesy DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-set-permissions-linux).
 
 
-___
-
 ## 0. Choice of media server
 
 Jellyfin has a simple client/server setup; I set up one computer on my network to serve media and any other computer on my home network (or android device like my tablet or TV) can connect to that server.  I'm not fussed about making the media available remotely, I have GB's of storage on every portable device for taking stuff with me and then I'm not reliant on wifi or signal (I hike, cycle and camp, I don't expect connectivity in my life  :P )
 
-___
 
 ## 1. Ripping
+
 [Handbrake](https://handbrake.fr/).  It's free, but not so easy, because there are a crap-ton of options.  It's a technical tool for technical people.  Two options from opposite ends of the techie spectrum;
 
 ### Minimal and portable, MP4 file
@@ -52,7 +50,6 @@ Matroska Video Files can hold multiple video, audio and subtitle tracks.  Pick t
 - In the "Subtitles" tab you do similar, use "Selection Behaviour" and under "Chosen Languages" move "any" to the right.  Clear the "burn-in" checkboxes (this option would scar subtitles directly onto the video file, rather than them being separate files overlayed, which means you could never switch them off).  Check "Allow SRT/SSA/ASS passthrough" and "Allow DVD/BD/Text passthrough", which will save them as files within the Matroska container.
 
 #### Then make sure you save these defaults, after going to all that effort
-___
 
 ## 2. Installing Jellyfin
 
@@ -68,8 +65,6 @@ curl https://repo.jellyfin.org/install-debuntu.sh | sudo bash
 You can use the URL to go look at that script, or you can just run it on your entirely disposable spare ancient laptop ;)
 
 For any other linux distros they have [docker container images](https://jellyfin.org/docs/general/installation/container).  Windows and MacOS installation is simply an executable installer and a DMG file respectively.
-
-___
 
 ## 3. Give Jellyfin the files
 
@@ -105,8 +100,6 @@ chmod -R 2770  # 2 = recursive, 7 = user, 7 = group, 0 = everyone else
 ```
 
 **Crucial step - REBOOT ** or spend the next hour wondering why Jellyfin still can't see anything (hypothetically) - need to do this for all these membership alterations to take effect.
-
-___
 
 ## 3b. Files are on an external drive - AI GENERATED STUFF HERE
 
@@ -163,7 +156,7 @@ This file tells Linux how to mount filesystems at boot. **Always back up this fi
 
     **Example `fstab` entry for an EXT4 drive:**
 
-    ```
+    ```bash
     UUID=YOUR_UUID_HERE /mnt/usbmedia ext4 defaults,nofail 0 0
     ```
 
@@ -174,7 +167,7 @@ This file tells Linux how to mount filesystems at boot. **Always back up this fi
     **If the drive is NTFS or exFAT (common for USB drives):**
     These filesystems don't natively support Linux permissions, so you must specify the user and group on mount:
 
-    ```
+    ```bash
     UUID=YOUR_UUID_HERE /mnt/usbmedia ntfs defaults,nofail,unmask=22,uid=jellyfin,gid=jellyfin 0 0
     ```
 
@@ -224,9 +217,9 @@ sudo systemctl restart jellyfin
 
 You can now add `/mnt/usbmedia` as a new library path within the Jellyfin web interface.
 
-___
 
 ## 4. Stop your server wandering off (IP address)
+
 It's helpful if the IP address of your server doesn't shift every time you restart the machine.  If it does, when restarting the client app on your tablet etc after a shift, you'll have to reconnect, and remember your password all over again.
 
 ### Easy option - router-side

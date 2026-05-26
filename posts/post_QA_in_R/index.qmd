@@ -10,7 +10,7 @@ I perform a lot of one-shot analysis and need to know it's right.
 
 *logo pinched from [r-bloggers.com](https://www.r-bloggers.com/), great site, you should check it out*
 
-## What does a person actually test?  Some background on why this post exists
+## What do you actually test?
 
 The code ends up being either a few complicated scripts or a simple and dedicated program, dependent on which way round you want to view something very single-purpose that takes specifically formatted csv files as inputs :P
 A person can end up doing a lot of weird maths in a small number of lines, and the information is often being used to make important decisions in a hurry, so those numbers need to be ironclad.
@@ -94,6 +94,7 @@ Output:
 1 Petal.Length - 1 >= -1e-08 & Petal.Length - 1.7 <= 1e-08
 2                   Species %vin% c("setosa", "virginica")
 ```
+~The example above adapted from [How to Automate Data Quality Checks with R](https://www.statology.org/how-to-automate-data-quality-checks-r/) by Jayita Gulati.~
 
 In base R can use `if` and `stop` to terminate execution or print out a message if some test is not met.
 I've used it crudely to simplify and encapsulate tests in scripts.

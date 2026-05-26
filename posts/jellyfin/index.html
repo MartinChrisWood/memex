@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Martin Wood">
+<meta name="dcterms.date" content="2026-05-26">
+
+<title>Jellyfin server - from DVD ripping to watching films in the bath – memex</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-2fee8176d83b8b83b3f52c1bb3497846.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">memex</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About Martin</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/MartinChrisWood"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/martin-wood-822655288/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Jellyfin server - from DVD ripping to watching films in the bath</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">tutorial</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Martin Wood </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">May 26, 2026</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<section id="dvds-and-installing-jellyfin-on-linux" class="level1">
+<h1>DVD’s and Installing Jellyfin (on Linux)</h1>
+<p>I want to get a <a href="https://jellyfin.org/">Jellyfin server</a> up and running with the rips of my (legally owned) DVD’s. Yes, I still have lots of DVD’s. I’ve even acquired more, mostly terrible B movies, because I don’t need HD to drink beer and watch a badly animated shark eating even less animated actors.</p>
+<p>There’s a few steps in this journey and I want to keep them in case I ever need to do this again. More specifically I never want to have to go learn about Linux user group permissions a second time.</p>
+<p>Blu-ray isn’t covered here because that little encryption war is insane, as is the cost of a player that stands a chance of actually playing your disk through the haze of weird proprietary formats and bloat.</p>
+<p>Gemini was used to figure out linux file permissions and drive mounting, and also to remind myself of the slightly laborious settings maze I had to navigate to get all the audio and subtitle tracks out of a disk in the MKV format.</p>
+<p>If like me you found the numerical codes used for permissions fairly confusing, here’s a good guide for later, on <a href="https://www.digitalocean.com/community/tutorials/how-to-set-permissions-linux">how they work under linux courtesy DigitalOcean</a>.</p>
+<section id="choice-of-media-server" class="level2">
+<h2 class="anchored" data-anchor-id="choice-of-media-server">0. Choice of media server</h2>
+<p>Jellyfin has a simple client/server setup; I set up one computer on my network to serve media and any other computer on my home network (or android device like my tablet or TV) can connect to that server. I’m not fussed about making the media available remotely, I have GB’s of storage on every portable device for taking stuff with me and then I’m not reliant on wifi or signal (I hike, cycle and camp, I don’t expect connectivity in my life :P )</p>
+</section>
+<section id="ripping" class="level2">
+<h2 class="anchored" data-anchor-id="ripping">1. Ripping</h2>
+<p><a href="https://handbrake.fr/">Handbrake</a>. It’s free, but not so easy, because there are a crap-ton of options. It’s a technical tool for technical people. Two options from opposite ends of the techie spectrum;</p>
+<section id="minimal-and-portable-mp4-file" class="level3">
+<h3 class="anchored" data-anchor-id="minimal-and-portable-mp4-file">Minimal and portable, MP4 file</h3>
+<p>This should be able to play on any device anywhere without complaining, and the file size is not bad, usually &lt; 1GB for a film (sometimes a bit more).</p>
+<ul>
+<li>After selecting the source (the DVD in the presumed DVD drive) select “Very Fast 1080p30” to start with.</li>
+<li>In the Summary tab select MP4 format if it isn’t selected already.</li>
+<li>In the Dimensions tab disable upscaling to keep the native resolution The software you play films through later will handle any upscaling, so you gain nothing by doing that work in advance except to create a larger file.</li>
+<li>In the Video tab select “Constant Framerate” on the left. Some players have trouble with varying framerates so this maximises compatibility.</li>
+<li>Still in the Video tab leave the “Quality” slider on its default value. This slider trades of video quality against video compression, the default (20, I think) is well chosen :)</li>
+<li>Finally, use the Subtitles tab to pick one Subtitles track to burn into the video if you want it. Beware it’ll be <strong>burned in</strong>, meaning part of the video, not a digital overlay you can switch off. If you want selectable subtitles you’ll need the other option…</li>
+</ul>
+</section>
+<section id="less-minimal-keep-everything-mkv-container-format---ai-generated-stuff-here" class="level3">
+<h3 class="anchored" data-anchor-id="less-minimal-keep-everything-mkv-container-format---ai-generated-stuff-here">Less minimal, keep everything, MKV container format - AI GENERATED STUFF HERE</h3>
+<p>Matroska Video Files can hold multiple video, audio and subtitle tracks. Pick this for keeping all your subtitle tracks and alternative audio tracks from the DVD. In return the video file will be a couple of GB, and the MKV container format isn’t supported so universally. Jellyfin does support it, so it’s a good option if building that solution is your only goal.</p>
+<ul>
+<li>After selecting the source as above, select the “MKV” format in the “Summary” tab</li>
+<li>You still need to select all the video encoding settings because MKV is a container for other tracks, not the actual encoding. The rest of the instructions are those for the MP4 above.</li>
+<li>In the “Audio” tab you’ll need to set it to detect ANY language track, by clicking “Selection Behaviour” and under “chosen languages” moving the “any” option into the right-hand column. Then you’ll need to tell it to rip EVERY detected language track by selecting “All matching tracks” under “Track Selection”. An unintended consequence: if there’s a directors commentary you’ll be getting that too. Sorry.</li>
+<li>In the “Subtitles” tab you do similar, use “Selection Behaviour” and under “Chosen Languages” move “any” to the right. Clear the “burn-in” checkboxes (this option would scar subtitles directly onto the video file, rather than them being separate files overlayed, which means you could never switch them off). Check “Allow SRT/SSA/ASS passthrough” and “Allow DVD/BD/Text passthrough”, which will save them as files within the Matroska container.</li>
+</ul>
+<section id="then-make-sure-you-save-these-defaults-after-going-to-all-that-effort" class="level4">
+<h4 class="anchored" data-anchor-id="then-make-sure-you-save-these-defaults-after-going-to-all-that-effort">Then make sure you save these defaults, after going to all that effort</h4>
+</section>
+</section>
+</section>
+<section id="installing-jellyfin" class="level2">
+<h2 class="anchored" data-anchor-id="installing-jellyfin">2. Installing Jellyfin</h2>
+<p><a href="https://jellyfin.org/docs/general/installation/">Here’s their documentation pages</a>. I have a fairly ancient x86 laptop that’s going to do the honours.</p>
+<p>Short version for linux people:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run their script from their website</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> https://repo.jellyfin.org/install-debuntu.sh <span class="kw">|</span> <span class="fu">sudo</span> bash</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>You can use the URL to go look at that script, or you can just run it on your entirely disposable spare ancient laptop ;)</p>
+<p>For any other linux distros they have <a href="https://jellyfin.org/docs/general/installation/container">docker container images</a>. Windows and MacOS installation is simply an executable installer and a DMG file respectively.</p>
+</section>
+<section id="give-jellyfin-the-files" class="level2">
+<h2 class="anchored" data-anchor-id="give-jellyfin-the-files">3. Give Jellyfin the files</h2>
+<p>Jellyfin gets its own user called <code>jellyfin</code> and its own group, also called <code>jellyfin</code>, when installed on Linux. This complicates file access because it doesn’t have access to your user account’s files by default. At this point I remembered “oh yeah, built by linux users” and gently slapped myself in the face for thinking I’d be done running just one script. This complication is why I suddenly needed to learn about Linux user groups.</p>
+<section id="files-are-on-device-drive" class="level3">
+<h3 class="anchored" data-anchor-id="files-are-on-device-drive">Files are on device drive</h3>
+<p>If whatever antique computer you’re victimising for this has enough storage already, you’re pretty much there. Easiest is to create a folder in a shared location on the drive (suggest <code>mnt/media</code>) and drop all your files in there. No further steps needed.</p>
+<p>Alternatively grant the <code>jellyfin</code> group access to the folder with your media in your home directory or wherever you stashed it. Best way to do that is to create a new group;</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> groupadd media-users  <span class="co"># New group created</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Then add both your own user and <code>jellyfin</code> to the group:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> usermod <span class="at">-aG</span> media-users your_user_name  <span class="co"># Add user to group</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> usermod <span class="at">-aG</span> media-users jellyfin</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Set your user as owner, and the new group as the group owner:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> chown <span class="at">-R</span> your_user:media-users /path/to/your/media</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Finally, the permissions for the folder need to be altered (recursively) so that both the user and the group have full control/access to files and these permissions are inherited by files and sub-folders inside:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> <span class="at">-R</span> 2770  <span class="co"># 2 = recursive, 7 = user, 7 = group, 0 = everyone else</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Crucial step - REBOOT </strong> or spend the next hour wondering why Jellyfin still can’t see anything (hypothetically) - need to do this for all these membership alterations to take effect.</p>
+</section>
+</section>
+<section id="b.-files-are-on-an-external-drive---ai-generated-stuff-here" class="level2">
+<h2 class="anchored" data-anchor-id="b.-files-are-on-an-external-drive---ai-generated-stuff-here">3b. Files are on an external drive - AI GENERATED STUFF HERE</h2>
+<section id="the-guidance-below-is-largely-gemini-2.5-speaking-mostly-my-contribution-has-been-cutting-prose-and-fluff-out" class="level4">
+<h4 class="anchored" data-anchor-id="the-guidance-below-is-largely-gemini-2.5-speaking-mostly-my-contribution-has-been-cutting-prose-and-fluff-out">The guidance below is largely Gemini 2.5 speaking, mostly my contribution has been cutting prose and fluff out…</h4>
+<p>I want to plug in a very large USB stick and serve media off that. You can do more complicated things like connecting it up to a separate file server but I have a hundred or so MP4 files, not exactly a collection worthy of the Smithsonian. I’m fine copying my collection from my desktop to a remote drive, because then I can be lazy and update that collection by adding files to the drive.</p>
+</section>
+<section id="the-plan-is-to-perma-mount-the-drive" class="level4">
+<h4 class="anchored" data-anchor-id="the-plan-is-to-perma-mount-the-drive">The plan is to perma-mount the drive</h4>
+<p>The drive needs to always mount with correct user/group and drive identifier on rebooting the computer for Jellyfin to not lose track of it, so granting Jellyfin access to a USB drive in Linux is a two-part process: <strong>Mounting</strong> the drive correctly and setting the <strong>Permissions</strong>.</p>
+<p>Use the <code>/etc/fstab</code> file for mounting, then apply permissions to the Jellyfin user.</p>
+</section>
+<section id="a-permanent-mounting-with-etcfstab" class="level4">
+<h4 class="anchored" data-anchor-id="a-permanent-mounting-with-etcfstab">a) Permanent Mounting with <code>/etc/fstab</code></h4>
+<p>For a server application like Jellyfin, you need the drive mounted consistently and with the correct user/group ID on boot.</p>
+<p>The UUID (Universally Unique Identifier) is the best way to ensure the system mounts the correct drive every time, regardless of which USB port you plug it into.</p>
+<ol type="1">
+<li><p>Plug in the USB drive.</p></li>
+<li><p>Use the <code>blkid</code> command to find its UUID.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> blkid</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p>Look for your drive in the output and copy the <code>UUID</code> value. It looks like a long string of numbers and letters (e.g., <code>UUID="93033593-60b5-38ef-8086-e434e74192b0"</code>).</p></li>
+</ol>
+</section>
+<section id="b-create-a-mount-point" class="level4">
+<h4 class="anchored" data-anchor-id="b-create-a-mount-point">b) Create a Mount Point</h4>
+<p>Create a directory where the drive will be mounted, Use a standard location like <code>/mnt/media</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mkdir <span class="at">-p</span> /mnt/usbmedia</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="c-edit-etcfstab" class="level4">
+<h4 class="anchored" data-anchor-id="c-edit-etcfstab">c) Edit <code>/etc/fstab</code></h4>
+<p>This file tells Linux how to mount filesystems at boot. <strong>Always back up this file before editing.</strong></p>
+<ol type="1">
+<li><p>Back up your current <code>fstab</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> cp /etc/fstab /etc/fstab.bak</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p>Open the file with a text editor (e.g., <code>nano</code>):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nano /etc/fstab</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p>Add a new line at the end using the UUID you found, the mount point you created, the filesystem type, and the mount options.</p>
+<p><strong>Example <code>fstab</code> entry for an EXT4 drive:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="va">UUID</span><span class="op">=</span>YOUR_UUID_HERE <span class="ex">/mnt/usbmedia</span> ext4 defaults,nofail 0 0</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><code>YOUR_UUID_HERE</code>: Replace with the UUID you copied.</li>
+<li><code>ext4</code>: Replace with your drive’s actual filesystem type (e.g., <code>ext4</code>, <code>ntfs</code>, <code>exfat</code>).</li>
+<li><code>nofail</code>: This is important; it tells the system to boot even if the drive isn’t plugged in.</li>
+</ul>
+<p><strong>If the drive is NTFS or exFAT (common for USB drives):</strong> These filesystems don’t natively support Linux permissions, so you must specify the user and group on mount:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="va">UUID</span><span class="op">=</span>YOUR_UUID_HERE <span class="ex">/mnt/usbmedia</span> ntfs defaults,nofail,unmask=22,uid=jellyfin,gid=jellyfin 0 0</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><code>uid=jellyfin,gid=jellyfin</code>: This mounts the entire drive to be owned by the <code>jellyfin</code> user and group, immediately solving the permission problem.</li>
+<li><code>umask=22</code>: Modifies the drive permissions to remove write permissions for other people/users/groups</li>
+</ul></li>
+<li><p>Save and close the file (Ctrl+O, Enter, Ctrl+X in nano).</p></li>
+<li><p>Test the mount without rebooting:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> daemon-reload <span class="co"># Reloads system control files?  REF CHECK</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mount <span class="at">-a</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If successful, the drive is now mounted and ready for permissions.</p></li>
+</ol>
+<p>I had to go back and reformat as ext4, because I had some MKV files larger than ~ 4GB, the largest file size supported by fat32, which I’d left the drive formatted as by default :(</p>
+</section>
+<section id="d-set-permissions" class="level4">
+<h4 class="anchored" data-anchor-id="d-set-permissions">d) Set Permissions</h4>
+<p>If you used the <code>ntfs</code>/<code>exfat</code> option above, you can skip this step, as the permissions are set by the mount options.</p>
+<p>If you are using <strong>EXT4</strong> (or another native Linux filesystem) and didn’t use the <code>uid</code>/<code>gid</code> options in <code>fstab</code>, you need to explicitly grant access.</p>
+<ol type="1">
+<li><p><strong>Change Ownership (The Simplest Method):</strong> This gives the <code>jellyfin</code> user and group complete control over the files.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> chown <span class="at">-R</span> jellyfin:jellyfin /mnt/usbmedia</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p><strong>Set Permissions:</strong> This grants the owner (<code>jellyfin</code>) read, write, and execute permissions (<code>7</code>) and the group/others read and execute (<code>5</code>).</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> chmod <span class="at">-R</span> 755 /mnt/usbmedia</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+</ol>
+</section>
+<section id="e-restart-jellyfin" class="level4">
+<h4 class="anchored" data-anchor-id="e-restart-jellyfin">e) Restart Jellyfin</h4>
+<p>After the drive is mounted and permissions are set, restart the Jellyfin service to ensure it recognizes the new directory structure.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl restart jellyfin</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>You can now add <code>/mnt/usbmedia</code> as a new library path within the Jellyfin web interface.</p>
+</section>
+</section>
+<section id="stop-your-server-wandering-off-ip-address" class="level2">
+<h2 class="anchored" data-anchor-id="stop-your-server-wandering-off-ip-address">4. Stop your server wandering off (IP address)</h2>
+<p>It’s helpful if the IP address of your server doesn’t shift every time you restart the machine. If it does, when restarting the client app on your tablet etc after a shift, you’ll have to reconnect, and remember your password all over again.</p>
+<section id="easy-option---router-side" class="level3">
+<h3 class="anchored" data-anchor-id="easy-option---router-side">Easy option - router-side</h3>
+<p>Logging in to my home router, I found I could reserve specific IP addresses for specific MAC addresses, with the device network name helpfully alongside the MAC to tell me what I was pinning. <a href="https://en.wikipedia.org/wiki/MAC_address">The MAC address is an arbitrary-seeming string assigned to a network interface</a> by the manufacturer of that network interface, so it serves as a unique ID. By reserving the IP address like this, you won’t need to change anything unless the router or the network device (machine or a network card speifically) change.</p>
+<p>In case you’ve not done it before, you can find your router’s login page for messing with settings by directing your web browser to its IP address, eg; <code>192.168.0.1</code>. To see what your router’s IP address is you’ll need to check the network settings on whatever device you’re using. Too many different devices, so you’ll have to google that yourself :) If you’ve not logged in to it before, you’ll need the admin login details typically hidden on the sticker on your router (yep, that’s what the other password on there was for).</p>
+</section>
+<section id="harder-option---server-side" class="level3">
+<h3 class="anchored" data-anchor-id="harder-option---server-side">Harder option - server-side</h3>
+<p>You can also configure a computer so that rather than being randomly assigned an IP address by <a href="https://en.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol">DHCP</a> (the protocol that does the random assigning), it insists on getting a specific IP address if available. Only becomes a problem if that address isn’t in fact available. Supposedly it’s possible to find out what range of IP addresses the router uses for DHCP (the last number in the four number address, goes from 0 to 255 max on IPv4). Then you pick an IP address higher than that. My router seemed to let me restrict the range it used manually in its Settings page. Googling this option is left as an exercise for the reader, because there’s lots of devices and I didn’t do it anyway ;)</p>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/MartinChrisWood\.github\.io\/memex\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

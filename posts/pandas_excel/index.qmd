@@ -1,11 +1,19 @@
-## Saving files that Excel won't complain about
+---
+title: "Save csv file from Pandas that Excel won't ruin"
+author: "Martin Wood"
+date: "2026-05-26"
+categories: [snippet]
+image: "excel_rex_gemini_web.webp"
+---
+
+# Saving files that Excel won't ruin
 
 Deal with a lot of columns that look like integers but are actually ID columns that can have leading zeroes.
 
 I also deal with a lot of human text with special characters, when saved in a csv file in UTF-8 as normal, Excel
 often fails to detect and correctly render the UTF-8 formatting due to being generally terrible software.
 
-How to save a file that excel will open, interpret and display correctly with these problems:
+How to save a file (from Python) that excel will open, interpret and display correctly with these problems:
 
 ```python
 import csv

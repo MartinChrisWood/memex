@@ -11,7 +11,7 @@ image: "example_gantt.png"
 Code for generating Gantt Charts, pretty ones, in Plotly.
 
 Read the original Plotly examples if you want to get started marginally quicker, and to see more examples of variants of these plots.
-Mines got some extra plotly arguments and a *marginally* more complete pile of code at the end.
+Mine's got some extra plotly arguments and a *marginally* more complete pile of code at the end.
 
 Uses Python, Pandas and Plotly.  The project has two logical components; creating a suitable dataframe representation of the tasks to
 be completed, and plotting that. Simple!

@@ -8,6 +8,9 @@ image: "python_environments_nano_banana.jpg"
 
 Quick cribsheets for handling python environments through different tools
 
+*Cover art courtesy Google's Nano Banana*
+
+
 ## [Pip](https://pip.pypa.io/en/stable/)
 ```bash
 python3 -m venv .env                        # Create venv off whatever python version you call from in folder .env
@@ -17,6 +20,7 @@ pip install -r requirements.txt             # install modules listed in requirem
 ```
 
 [Pip documentation - requirements file format](https://pip.pypa.io/en/stable/reference/requirements-file-format/)
+
 
 ## [Conda](https://docs.conda.io/en/latest/)
 

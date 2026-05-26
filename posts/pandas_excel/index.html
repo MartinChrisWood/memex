@@ -9,7 +9,7 @@
 <meta name="author" content="Martin Wood">
 <meta name="dcterms.date" content="2026-05-26">
 
-<title>Reminding myself how to use Quarto to build this website – memex</title>
+<title>Save csv file from Pandas that Excel won’t ruin – memex</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -154,9 +154,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Reminding myself how to use Quarto to build this website</h1>
+      <h1 class="title">Save csv file from Pandas that Excel won’t ruin</h1>
                                 <div class="quarto-categories">
-                <div class="quarto-category">tutorial</div>
+                <div class="quarto-category">snippet</div>
               </div>
                   </div>
   </div>
@@ -193,41 +193,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="because-i-keep-forgetting-or-moving-machine" class="level1">
-<h1>Because I keep forgetting or moving machine</h1>
-<section id="guidance-links" class="level2">
-<h2 class="anchored" data-anchor-id="guidance-links">Guidance links</h2>
-<p>Need these links for setting up.</p>
-<p>Download and install, then follow the Github Pages guidance for option 2: making use of quarto’s <code>quarto publish</code> command to push rendered websites up from the command line.</p>
-<p><a href="https://quarto.org/docs/download/index.html">Download Quarto</a></p>
-<p><a href="https://quarto.org/docs/websites/website-blog.html">Quarto (blog) setup guidance</a></p>
-<p><a href="https://quarto.org/docs/publishing/github-pages.html">Github pages guidance</a></p>
-</section>
-<section id="commands" class="level2">
-<h2 class="anchored" data-anchor-id="commands">Commands</h2>
-<section id="before-publishing" class="level3">
-<h3 class="anchored" data-anchor-id="before-publishing">Before publishing</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> preview</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Renders the website and serves it up locally so you can see what you just created</p>
-</section>
-<section id="to-render-and-publish-up-once-ready" class="level3">
-<h3 class="anchored" data-anchor-id="to-render-and-publish-up-once-ready">To render and publish up once ready</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> publish</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-</section>
-<section id="squishing-images" class="level2">
-<h2 class="anchored" data-anchor-id="squishing-images">Squishing images</h2>
-<p>I tend to just link to images on other people’s websites when discussing their software, figure the extra networking must do their SEO some good and saves me copying copyrighted images.</p>
-<p>If I generate an image (2026 is weird) using just Gemini or something, it can’t seem to handle requests for lower res images or to downscale something it’s produced, which is pretty weak.</p>
-<p>So here’s how to use imagemagick to squish an image at the command line:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install imagemagick</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">magick</span> excel_rex_gemini.png <span class="at">-resize</span> 1000x <span class="at">-quality</span> 80 excel_rex_gemini_web.webp</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The <code>.webp</code> file extension is a newfangled even more compressed format that saves a lot on filesize so apparently just a good idea by default: <a href="https://developers.google.com/speed/webp">Google WebP page</a></p>
-<p>Easy to change to <code>.png</code> if suspicious.</p>
+<section id="saving-files-that-excel-wont-ruin" class="level1">
+<h1>Saving files that Excel won’t ruin</h1>
+<p>Deal with a lot of columns that look like integers but are actually ID columns that can have leading zeroes.</p>
+<p>I also deal with a lot of human text with special characters, when saved in a csv file in UTF-8 as normal, Excel often fails to detect and correctly render the UTF-8 formatting due to being generally terrible software.</p>
+<p>How to save a file (from Python) that excel will open, interpret and display correctly with these problems:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> csv</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> ...</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Excel will interpret cells that start with a '-' as formulas</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'some_field'</span>] <span class="op">=</span> df[<span class="st">'some_field'</span>].<span class="bu">str</span>.replace(<span class="st">"- "</span>, <span class="st">""</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>df.to_csv(</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="st">"data/output/saved_file.csv"</span>, </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>quoting<span class="op">=</span>csv.QUOTE_NONNUMERIC,                   <span class="co"># Quote all non-numeric fields in the output file, which forces excel to read as string</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>encoding<span class="op">=</span><span class="st">"utf-8-sig"</span>,                           <span class="co"># An encoding that adds a UTF-8 BOM (Byte Order Mark) that tells excel the doc is in UTF-8</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>index<span class="op">=</span><span class="va">False</span>                                     <span class="co"># Don't add a column for the index, only need this if your index is meaningless</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

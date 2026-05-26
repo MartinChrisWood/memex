@@ -1,0 +1,239 @@
+---
+title: "Jellyfin server - from DVD ripping to watching films in the bath"
+author: "Martin Wood"
+date: "2026-05-26"
+categories: [tutorial]
+image: "https://jellyfin.org/images/logo.svg"
+---
+
+# DVD's and Installing Jellyfin (on Linux)
+
+I want to get a [Jellyfin server](https://jellyfin.org/) up and running with the rips of my (legally owned) DVD's.  Yes, I still have lots of DVD's.  I've even acquired more, mostly terrible B movies, because I don't need HD to drink beer and watch a badly animated shark eating even less animated actors.
+
+There's a few steps in this journey and I want to keep them in case I ever need to do this again.  More specifically I never want to have to go learn about Linux user group permissions a second time.
+
+Blu-ray isn't covered here because that little encryption war is insane, as is the cost of a player that stands a chance of actually playing your disk through the haze of weird proprietary formats and bloat.
+
+Gemini was used to figure out linux file permissions and drive mounting, and also to remind myself of the slightly laborious settings maze I had to navigate to get all the audio and subtitle tracks out of a disk in the MKV format.
+
+If like me you found the numerical codes used for permissions fairly confusing, here's a good guide for later,
+on [how they work under linux courtesy DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-set-permissions-linux).
+
+
+___
+
+## 0. Choice of media server
+
+Jellyfin has a simple client/server setup; I set up one computer on my network to serve media and any other computer on my home network (or android device like my tablet or TV) can connect to that server.  I'm not fussed about making the media available remotely, I have GB's of storage on every portable device for taking stuff with me and then I'm not reliant on wifi or signal (I hike, cycle and camp, I don't expect connectivity in my life  :P )
+
+___
+
+## 1. Ripping
+[Handbrake](https://handbrake.fr/).  It's free, but not so easy, because there are a crap-ton of options.  It's a technical tool for technical people.  Two options from opposite ends of the techie spectrum;
+
+### Minimal and portable, MP4 file
+
+This should be able to play on any device anywhere without complaining, and the file size is not bad, usually < 1GB for a film (sometimes a bit more).
+
+- After selecting the source (the DVD in the presumed DVD drive) select "Very Fast 1080p30" to start with.
+- In the Summary tab select MP4 format if it isn't selected already.
+- In the Dimensions tab disable upscaling to keep the native resolution  The software you play films through later will handle any upscaling, so you gain nothing by doing that work in advance except to create a larger file.
+- In the Video tab select "Constant Framerate" on the left.  Some players have trouble with varying framerates so this maximises compatibility.
+- Still in the Video tab leave the "Quality" slider on its default value.  This slider trades of video quality against video compression, the default (20, I think) is well chosen :)
+- Finally, use the Subtitles tab to pick one Subtitles track to burn into the video if you want it.  Beware it'll be **burned in**, meaning part of the video, not a digital overlay you can switch off.  If you want selectable subtitles you'll need the other option...
+
+### Less minimal, keep everything, MKV container format - AI GENERATED STUFF HERE
+
+Matroska Video Files can hold multiple video, audio and subtitle tracks.  Pick this for keeping all your subtitle tracks and alternative audio tracks from the DVD.  In return the video file will be a couple of GB, and the MKV container format isn't supported so universally.  Jellyfin does support it, so it's a good option if building that solution is your only goal.
+
+- After selecting the source as above, select the "MKV" format in the "Summary" tab
+- You still need to select all the video encoding settings because MKV is a container for other tracks, not the actual encoding.  The rest of the instructions are those for the MP4 above.
+- In the "Audio" tab you'll need to set it to detect ANY language track, by clicking "Selection Behaviour" and under "chosen languages" moving the "any" option into the right-hand column.  Then you'll need to tell it to rip EVERY detected language track by selecting "All matching tracks" under "Track Selection".  An unintended consequence: if there's a directors commentary you'll be getting that too.  Sorry.
+- In the "Subtitles" tab you do similar, use "Selection Behaviour" and under "Chosen Languages" move "any" to the right.  Clear the "burn-in" checkboxes (this option would scar subtitles directly onto the video file, rather than them being separate files overlayed, which means you could never switch them off).  Check "Allow SRT/SSA/ASS passthrough" and "Allow DVD/BD/Text passthrough", which will save them as files within the Matroska container.
+
+#### Then make sure you save these defaults, after going to all that effort
+___
+
+## 2. Installing Jellyfin
+
+[Here's their documentation pages](https://jellyfin.org/docs/general/installation/).  I have a fairly ancient x86 laptop that's going to do the honours.  
+
+Short version for linux people:
+
+```bash
+# Run their script from their website
+curl https://repo.jellyfin.org/install-debuntu.sh | sudo bash
+```
+
+You can use the URL to go look at that script, or you can just run it on your entirely disposable spare ancient laptop ;)
+
+For any other linux distros they have [docker container images](https://jellyfin.org/docs/general/installation/container).  Windows and MacOS installation is simply an executable installer and a DMG file respectively.
+
+___
+
+## 3. Give Jellyfin the files
+
+Jellyfin gets its own user called `jellyfin` and its own group, also called `jellyfin`, when installed on Linux.  This complicates file access because it doesn't have access to your user account's files by default.  At this point I remembered "oh yeah, built by linux users" and gently slapped myself in the face for thinking I'd be done running just one script.  This complication is why I suddenly needed to learn about Linux user groups.
+
+### Files are on device drive
+
+If whatever antique computer you're victimising for this has enough storage already, you're pretty much there.  Easiest is to create a folder in a shared location on the drive (suggest `mnt/media`) and drop all your files in there.  No further steps needed.
+
+Alternatively grant the `jellyfin` group access to the folder with your media in your home directory or wherever you stashed it.  Best way to do that is to create a new group;
+
+```bash
+sudo groupadd media-users  # New group created
+```
+
+Then add both your own user and `jellyfin` to the group:
+
+```bash
+sudo usermod -aG media-users your_user_name  # Add user to group
+sudo usermod -aG media-users jellyfin
+```
+
+Set your user as owner, and the new group as the group owner:
+
+```bash
+sudo chown -R your_user:media-users /path/to/your/media
+```
+
+Finally, the permissions for the folder need to be altered (recursively) so that both the user and the group have full control/access to files and these permissions are inherited by files and sub-folders inside:
+
+```bash
+chmod -R 2770  # 2 = recursive, 7 = user, 7 = group, 0 = everyone else
+```
+
+**Crucial step - REBOOT ** or spend the next hour wondering why Jellyfin still can't see anything (hypothetically) - need to do this for all these membership alterations to take effect.
+
+___
+
+## 3b. Files are on an external drive - AI GENERATED STUFF HERE
+
+#### The guidance below is largely Gemini 2.5 speaking, mostly my contribution has been cutting prose and fluff out...
+
+I want to plug in a very large USB stick and serve media off that.  You can do more complicated things like connecting it up to a separate file server but I have a hundred or so MP4 files, not exactly a collection worthy of the Smithsonian.  I'm fine copying my collection from my desktop to a remote drive, because then I can be lazy and update that collection by adding files to the drive.
+
+#### The plan is to perma-mount the drive
+
+The drive needs to always mount with correct user/group and drive identifier on rebooting the computer for Jellyfin to not lose track of it, so granting Jellyfin access to a USB drive in Linux is a two-part process: **Mounting** the drive correctly and setting the **Permissions**.
+
+Use the `/etc/fstab` file for mounting, then apply permissions to the Jellyfin user.
+
+
+#### a) Permanent Mounting with `/etc/fstab`
+
+For a server application like Jellyfin, you need the drive mounted consistently and with the correct user/group ID on boot.
+
+The UUID (Universally Unique Identifier) is the best way to ensure the system mounts the correct drive every time, regardless of which USB port you plug it into.
+
+1.  Plug in the USB drive.
+2.  Use the `blkid` command to find its UUID.
+
+    ```bash
+    sudo blkid
+    ```
+4.  Look for your drive in the output and copy the `UUID` value. It looks like a long string of numbers and letters (e.g., `UUID="93033593-60b5-38ef-8086-e434e74192b0"`).
+
+#### b) Create a Mount Point
+
+Create a directory where the drive will be mounted, Use a standard location like `/mnt/media`.
+
+```bash
+sudo mkdir -p /mnt/usbmedia
+```
+
+#### c) Edit `/etc/fstab`
+
+This file tells Linux how to mount filesystems at boot. **Always back up this file before editing.**
+
+1.  Back up your current `fstab`:
+
+    ```bash
+    sudo cp /etc/fstab /etc/fstab.bak
+    ```
+
+2.  Open the file with a text editor (e.g., `nano`):
+
+    ```bash
+    sudo nano /etc/fstab
+    ```
+
+3.  Add a new line at the end using the UUID you found, the mount point you created, the filesystem type, and the mount options.
+
+    **Example `fstab` entry for an EXT4 drive:**
+
+    ```
+    UUID=YOUR_UUID_HERE /mnt/usbmedia ext4 defaults,nofail 0 0
+    ```
+
+      * `YOUR_UUID_HERE`: Replace with the UUID you copied.
+      * `ext4`: Replace with your drive's actual filesystem type (e.g., `ext4`, `ntfs`, `exfat`).
+      * `nofail`: This is important; it tells the system to boot even if the drive isn't plugged in.
+  
+    **If the drive is NTFS or exFAT (common for USB drives):**
+    These filesystems don't natively support Linux permissions, so you must specify the user and group on mount:
+
+    ```
+    UUID=YOUR_UUID_HERE /mnt/usbmedia ntfs defaults,nofail,unmask=22,uid=jellyfin,gid=jellyfin 0 0
+    ```
+
+      * `uid=jellyfin,gid=jellyfin`: This mounts the entire drive to be owned by the `jellyfin` user and group, immediately solving the permission problem.
+	  * `umask=22`: Modifies the drive permissions to remove write permissions for other people/users/groups
+
+5.  Save and close the file (Ctrl+O, Enter, Ctrl+X in nano).
+
+6.  Test the mount without rebooting:
+
+    ```bash
+    systemctl daemon-reload # Reloads system control files?  REF CHECK
+	sudo mount -a
+    ```
+
+    If successful, the drive is now mounted and ready for permissions.
+
+I had to go back and reformat as ext4, because I had some MKV files larger than ~ 4GB, the largest file size supported by fat32, which I'd left the drive formatted as by default :(
+
+#### d) Set Permissions
+
+If you used the `ntfs`/`exfat` option above, you can skip this step, as the permissions are set by the mount options.
+
+If you are using **EXT4** (or another native Linux filesystem) and didn't use the `uid`/`gid` options in `fstab`, you need to explicitly grant access.
+
+1.  **Change Ownership (The Simplest Method):**
+    This gives the `jellyfin` user and group complete control over the files.
+
+    ```bash
+    sudo chown -R jellyfin:jellyfin /mnt/usbmedia
+    ```
+
+2.  **Set Permissions:**
+    This grants the owner (`jellyfin`) read, write, and execute permissions (`7`) and the group/others read and execute (`5`).
+
+    ```bash
+    sudo chmod -R 755 /mnt/usbmedia
+    ```
+
+#### e) Restart Jellyfin
+
+After the drive is mounted and permissions are set, restart the Jellyfin service to ensure it recognizes the new directory structure.
+
+```bash
+sudo systemctl restart jellyfin
+```
+
+You can now add `/mnt/usbmedia` as a new library path within the Jellyfin web interface.
+
+___
+
+## 4. Stop your server wandering off (IP address)
+It's helpful if the IP address of your server doesn't shift every time you restart the machine.  If it does, when restarting the client app on your tablet etc after a shift, you'll have to reconnect, and remember your password all over again.
+
+### Easy option - router-side
+Logging in to my home router, I found I could reserve specific IP addresses for specific MAC addresses, with the device network name helpfully alongside the MAC to tell me what I was pinning.  [The MAC address is an arbitrary-seeming string assigned to a network interface](https://en.wikipedia.org/wiki/MAC_address) by the manufacturer of that network interface, so it serves as a unique ID.  By reserving the IP address like this, you won't need to change anything unless the router or the network device (machine or a network card speifically) change.
+
+In case you've not done it before, you can find your router's login page for messing with settings by directing your web browser to its IP address, eg; `192.168.0.1`.  To see what your router's IP address is you'll need to check the network settings on whatever device you're using.  Too many different devices, so you'll have to google that yourself :)  If you've not logged in to it before, you'll need the admin login details typically hidden on the sticker on your router (yep, that's what the other password on there was for).
+
+### Harder option - server-side
+
+You can also configure a computer so that rather than being randomly assigned an IP address by [DHCP](https://en.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol) (the protocol that does the random assigning), it insists on getting a specific IP address if available.  Only becomes a problem if that address isn't in fact available.  Supposedly it's possible to find out what range of IP addresses the router uses for DHCP (the last number in the four number address, goes from 0 to 255 max on IPv4).  Then you pick an IP address higher than that.  My router seemed to let me restrict the range it used manually in its Settings page.  Googling this option is left as an exercise for the reader, because there's lots of devices and I didn't do it anyway ;)

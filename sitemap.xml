@@ -1,47 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://MartinChrisWood.github.io/memex/posts/post_QA_in_R/index.html</loc>
-    <lastmod>2026-05-26T14:40:23.644Z</lastmod>
-  </url>
-  <url>
-    <loc>https://MartinChrisWood.github.io/memex/posts/pandas_excel/index.html</loc>
-    <lastmod>2026-05-26T14:29:59.540Z</lastmod>
-  </url>
-  <url>
-    <loc>https://MartinChrisWood.github.io/memex/posts/welcome/index.html</loc>
-    <lastmod>2026-05-26T12:12:31.073Z</lastmod>
+    <loc>https://MartinChrisWood.github.io/memex/about.html</loc>
+    <lastmod>2026-06-05T15:12:37.625Z</lastmod>
   </url>
   <url>
     <loc>https://MartinChrisWood.github.io/memex/posts/review_DSATCL/index.html</loc>
-    <lastmod>2026-05-26T12:12:31.072Z</lastmod>
-  </url>
-  <url>
-    <loc>https://MartinChrisWood.github.io/memex/posts/post_gantt/index.html</loc>
-    <lastmod>2026-05-26T14:40:23.645Z</lastmod>
-  </url>
-  <url>
-    <loc>https://MartinChrisWood.github.io/memex/about.html</loc>
-    <lastmod>2026-05-26T12:12:31.064Z</lastmod>
-  </url>
-  <url>
-    <loc>https://MartinChrisWood.github.io/memex/index.html</loc>
-    <lastmod>2026-05-26T12:12:31.067Z</lastmod>
-  </url>
-  <url>
-    <loc>https://MartinChrisWood.github.io/memex/posts/python_environments/index.html</loc>
-    <lastmod>2026-05-26T14:40:23.646Z</lastmod>
-  </url>
-  <url>
-    <loc>https://MartinChrisWood.github.io/memex/posts/review_SICP/index.html</loc>
-    <lastmod>2026-05-26T12:12:31.072Z</lastmod>
-  </url>
-  <url>
-    <loc>https://MartinChrisWood.github.io/memex/posts/jellyfin/index.html</loc>
-    <lastmod>2026-05-26T14:29:59.539Z</lastmod>
+    <lastmod>2026-06-05T15:12:37.627Z</lastmod>
   </url>
   <url>
     <loc>https://MartinChrisWood.github.io/memex/posts/using_quarto/index.html</loc>
-    <lastmod>2026-05-26T14:29:59.540Z</lastmod>
+    <lastmod>2026-06-05T15:12:37.628Z</lastmod>
+  </url>
+  <url>
+    <loc>https://MartinChrisWood.github.io/memex/posts/pandas_excel/index.html</loc>
+    <lastmod>2026-06-05T15:12:37.626Z</lastmod>
+  </url>
+  <url>
+    <loc>https://MartinChrisWood.github.io/memex/posts/review_SICP/index.html</loc>
+    <lastmod>2026-06-05T15:12:37.628Z</lastmod>
+  </url>
+  <url>
+    <loc>https://MartinChrisWood.github.io/memex/posts/yet_another_markdown_viewer/index.html</loc>
+    <lastmod>2026-06-05T15:30:09.570Z</lastmod>
+  </url>
+  <url>
+    <loc>https://MartinChrisWood.github.io/memex/posts/python_environments/index.html</loc>
+    <lastmod>2026-06-05T15:12:37.627Z</lastmod>
+  </url>
+  <url>
+    <loc>https://MartinChrisWood.github.io/memex/posts/jellyfin/index.html</loc>
+    <lastmod>2026-06-05T15:12:37.626Z</lastmod>
+  </url>
+  <url>
+    <loc>https://MartinChrisWood.github.io/memex/posts/post_gantt/index.html</loc>
+    <lastmod>2026-06-05T15:12:37.627Z</lastmod>
+  </url>
+  <url>
+    <loc>https://MartinChrisWood.github.io/memex/posts/post_QA_in_R/index.html</loc>
+    <lastmod>2026-06-05T15:12:37.626Z</lastmod>
+  </url>
+  <url>
+    <loc>https://MartinChrisWood.github.io/memex/posts/welcome/index.html</loc>
+    <lastmod>2026-06-05T15:12:37.628Z</lastmod>
+  </url>
+  <url>
+    <loc>https://MartinChrisWood.github.io/memex/index.html</loc>
+    <lastmod>2026-06-05T15:12:37.626Z</lastmod>
   </url>
 </urlset>

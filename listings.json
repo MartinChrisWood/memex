@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/yet_another_markdown_viewer/index.html",
       "/posts/jellyfin/index.html",
       "/posts/pandas_excel/index.html",
       "/posts/using_quarto/index.html",

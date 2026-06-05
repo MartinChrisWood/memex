@@ -57,6 +57,7 @@ I asked Gemini to keep everything bar `marked.min.js` in the same file, to simpl
 ## Some stretch goals/feature creep
 
 It's an excellent MVP, some desirable features are:
+
 1. Automatically refreshing the render, so that latest saved changes are viewable without manually clicking the file again (and without the browser returning to the top of the page)
 2. Dark Mode.  Who doesn't want Dark Mode?
 
@@ -70,4 +71,9 @@ I've tentatively assigned it an MIT license in the hope that Gemini didn't rip o
 
 But it's sufficient for me to eyeball markdown typed on my potato PC offline and locally, so that's me sorted.
 
-WIP: Refesh file list
+## Critical weakness
+
+The file browser on the left - it won't update if files are added or removed, it's not allowed to scan
+for new files (see previous comments on security).  If I add or remove files, I have to re-mount the folder effectively.
+This is annoying and involves three button presses, which is three more than I'd like, but workarounds don't really
+seem to exist if I want to work with real files on a disk.

@@ -2,6 +2,7 @@
 title: "Yet Another Markdown Viewer (for locked down corporate potato PC's)"
 author: "Martin Wood"
 date: "2026-06-05"
+date-modified: "2026-06-19"
 categories: [blather]
 image: "app_screenshot.png"
 ---
@@ -9,6 +10,10 @@ image: "app_screenshot.png"
 # [Yet Another Markdown Viewer (for locked down corporate potato PC's)](https://github.com/MartinChrisWood/really_simple_markdown_viewer)
 
 ![A screenshot of the markdown viewer, rendering part of this blog post](app_screenshot.png)
+
+## \[UPDATE\] And then, it became somewhat redundant
+
+Turns out somewhat recently, [Microsoft added a Markdown editor to Sharepoint](https://office-watch.com/2026/markdown-editing-onedrive-sharepoint/).  It's still not quite what I need because it needs you to be online to work, and a critical requirement for my apps is "works on a train in a tunnel in the Peak District", but there you go.  One more option :)
 
 ## An experiment in just generating an app I need
 
@@ -46,13 +51,9 @@ Gemini called the folder input tag "old school", I like base HTML stuff, it will
 
 I realised as I was building this that I didn't need a bespoke editor if I was just using local files, while syntax highlighting would have been nice, Notepad is perfectly capable of writing markdown, and is relatively minimal if you ignore the copilot button someone jammed in there against my will.
 
-
-
 ### viewer.html
 
 I asked Gemini to keep everything bar `marked.min.js` in the same file, to simplify the transplant to my work PC, and sharing it with anyone curious.  Thus this file contains all the app's JS and CSS as well.  for that it's still only 160 lines long (on the first iteration).
-
-
 
 ## Some stretch goals/feature creep
 

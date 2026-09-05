@@ -2,6 +2,8 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/local_llm_setup/local_llm_setup.html",
+      "/posts/writing_tools/writing_tools.html",
       "/posts/yet_another_markdown_viewer/index.html",
       "/posts/jellyfin/index.html",
       "/posts/pandas_excel/index.html",

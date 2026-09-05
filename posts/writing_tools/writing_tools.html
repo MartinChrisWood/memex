@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Martin Wood">
-<meta name="dcterms.date" content="2026-06-05">
+<meta name="dcterms.date" content="2026-09-04">
 
-<title>Yet Another Markdown Viewer (for locked down corporate potato PC’s) – memex</title>
+<title>Markdown-based writing tools – memex</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -27,6 +27,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -122,9 +157,9 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Yet Another Markdown Viewer (for locked down corporate potato PC’s)</h1>
+      <h1 class="title">Markdown-based writing tools</h1>
                                 <div class="quarto-categories">
-                <div class="quarto-category">blather</div>
+                <div class="quarto-category">software</div>
               </div>
                   </div>
   </div>
@@ -142,16 +177,10 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">June 5, 2026</p>
+        <p class="date">September 4, 2026</p>
       </div>
     </div>
     
-      <div>
-      <div class="quarto-title-meta-heading">Modified</div>
-      <div class="quarto-title-meta-contents">
-        <p class="date-modified">June 19, 2026</p>
-      </div>
-    </div>
       
     </div>
     
@@ -167,74 +196,63 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<section id="yet-another-markdown-viewer-for-locked-down-corporate-potato-pcs" class="level1">
-<h1><a href="https://github.com/MartinChrisWood/really_simple_markdown_viewer">Yet Another Markdown Viewer (for locked down corporate potato PC’s)</a></h1>
-<p>Quickly making a markdown editor that’s safe to use in corpo-world PC’s.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="app_screenshot.png" class="img-fluid figure-img"></p>
-<figcaption>A screenshot of the markdown viewer, rendering part of this blog post</figcaption>
-</figure>
-</div>
-<section id="update-and-then-it-became-somewhat-redundant" class="level2">
-<h2 class="anchored" data-anchor-id="update-and-then-it-became-somewhat-redundant">[UPDATE] And then, it became somewhat redundant</h2>
-<p>Turns out somewhat recently, <a href="https://office-watch.com/2026/markdown-editing-onedrive-sharepoint/">Microsoft added a Markdown editor to Sharepoint</a>. It’s still not quite what I need because it needs you to be online to work, and a critical requirement for my apps is “works on a train in a tunnel in the Peak District”, but there you go. One more option :)</p>
+<section id="tldr-pipx-maestral-fresh-editor-ide" class="level2">
+<h2 class="anchored" data-anchor-id="tldr-pipx-maestral-fresh-editor-ide">TL:DR; pipx, maestral, fresh-editor (IDE)</h2>
+<p>I like to write, which inevitably means I’ve been exploring tools for doing so.</p>
+<p>Partly I write these blog posts (which are really a way to record commands my future self will need when I break something), partly bad fiction I’m never going to show to any living soul (it’s a way to calm down).</p>
+<p>I’ve become kind of frustrated by the software one would normally use for this: MSWord and LibreOffice are big and pretend that you’re working on paper for some reason. I like using <a href="https://en.wikipedia.org/wiki/Markdown">Markdown</a> for stuff, but VSCode is overkill and fairly cluttered by default. I also want to be able to do this from either my Chromebook or from linux running on any one of the old rusty laptops and devices I seem to accumulate, so something lightweight and fast to load would be better. I need stuff I can use from the command line of the Linux container running on my Chromebook, because it’s the only computer I have light and portable enough I can carry it alongside my office laptop, but Android’s offering for editors either aren’t great or ARE great but don’t interface with Dropbox very well.</p>
+<p>A final requirement for myself is that my writing be backed up to Dropbox (it’s not really worth anything but I’d be sad losing my ramblings) (yes, some people still use Dropbox).</p>
 </section>
-<section id="an-experiment-in-just-generating-an-app-i-need" class="level2">
-<h2 class="anchored" data-anchor-id="an-experiment-in-just-generating-an-app-i-need">An experiment in just generating an app I need</h2>
-<p>At work, like many, I use a severely locked down corporate laptop on which I can install very little. My software is limited to anything Microsoft will let me have by default (our only browser is Edge). I’d love to be able to draft notes and work in Markdown rather than word (too heavy and manual for quick work) or OneNote (just….ugh. Copy-Paste never does what I need, let alone anything else).</p>
-<p>But since it’s all locked down, I can’t install anything more useful.</p>
-<p>But we still have web browsers, and HTML + CSS + JavaScript I’ve long known is a useful last resort for a dev locked into corporate potato PC’s.</p>
-<p>There are various browser-based editors such as <a href="https://stackedit.io/">StackEdit</a>, which work pretty well and don’t leak data out to the wider internet, running entirely client-side. It’s nice that so many before me had the same thoughts! but a quick bit of experimentation proved I can’t just save them locally from the browser and run them entirely inside an offline laptop (I catch trains through mountains, I need this). I also suspect, but have not confirmed, that our aggressively stanced corporate web browsers would refuse to persist session or site information in such a way that I could not trust these apps to preserve my notes for any length of time. I need the actual markdown files to be down, local, and backed up via the corporate overlord approved OneDrive.</p>
+<section id="dropbox-solution-maestral" class="level2">
+<h2 class="anchored" data-anchor-id="dropbox-solution-maestral">Dropbox solution: <a href="https://pypi.org/project/maestral/">Maestral</a></h2>
+<p>Maestral’s a great little find, a command-line only client for Dropbox that handles syncing with a pretty low memory and CPU use. It’s a python tool, so to install it, use <a href="https://github.com/pypa/pipx">pipx</a>. Pipx lets you install python modules/programs into their own isolated environments, which then lets you use the tools you’ve installed systemwide. Handy!</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> python3-pip python3-venv pipx  <span class="co"># Install pipx and dependencies</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">pipx</span> install <span class="st">"maestral"</span>                            <span class="co"># Install tool</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">pipx</span> ensurepath                                    <span class="co"># Makes sure pipx installations are discoverable by your system</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="authenticate-maestral" class="level3">
+<h3 class="anchored" data-anchor-id="authenticate-maestral">Authenticate Maestral</h3>
+<p>Running <code>maestral start</code> the first time will trigger the setup and authentication process, follow the instructions and once authenticated you can decide which folders to sync, which is handy if like me you have a terabyte of random old files archived that you’d rather leave behind.</p>
+<p>To later add or remove new folders to list:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">maestral</span> excluded add/remove ...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>(Though it’s easier to fire <code>maestral --help</code> and figure out anything you have to change from there).</p>
 </section>
-<section id="so-i-get-to-enter-the-ai-era" class="level2">
-<h2 class="anchored" data-anchor-id="so-i-get-to-enter-the-ai-era">So I get to enter the “AI Era”</h2>
-<p>Previously, building an entire miniature web app just so that I could properly view markdown files quickly and locally would have been far too much of a faff. I would have carried on with OneNote, and the gentle swearing that ensues each time copy-paste produces a bunch of useless source link info.</p>
-<p>But now we have AI’s to do mundane stuff for us, like coding up a little local web app in a single HTML file that I can then email to myself (because the only easy route for data to make it into a corporate environment is basically email).</p>
-<p>For this project, I didn’t even bother setting up properly for agentic coding, I was working in a coffee shop and my pet LLM is caged inside a chonky gaming desktop at home. For a one-page app, having an argument with Gemini’s chat interface and doing some copy-paste is more than enough.</p>
-</section>
-<section id="whats-in-there" class="level2">
-<h2 class="anchored" data-anchor-id="whats-in-there">What’s in there</h2>
-<section id="the-core-of-it-marked.js-by-christopher-jeffrey-mit-licensed" class="level3">
-<h3 class="anchored" data-anchor-id="the-core-of-it-marked.js-by-christopher-jeffrey-mit-licensed">The core of it: <a href="https://github.com/markedjs/marked">marked.js by Christopher Jeffrey (MIT Licensed)</a></h3>
-<p>The app Gemini gave me has two major components or aspects to it. One of them is the markdown rendering library marked.js, which is essentially doing all the actual work! Kudos to Chris and the 217 collaborators who’ve created this handy little doodad, suspect I’ll find more uses for it as many others have.</p>
-<p>I’ve downloaded a copy of <a href="https://cdn.jsdelivr.net/npm/marked/marked.min.js">marked.min.js</a> to keep with my local app, so that nothing I do with this little app ever touches the internet. People get touchy about the sensitivity of some of the corporate stuff, so better to be able to assert confidently that the internet isn’t involved in any way.</p>
-</section>
-<section id="file-access-folder-input-tag" class="level3">
-<h3 class="anchored" data-anchor-id="file-access-folder-input-tag">File access: Folder input tag</h3>
-<p>The other major requirement is to be able to view and select files on the local hard disk. For obvious security reasons, a HTML page running in a browser isn’t allowed to just access whatever random files on disk it likes.</p>
-<p>Gemini called the folder input tag “old school”, I like base HTML stuff, it will probably still be working a few years later. Advantage: Can easily add a button to select a folder to browse, of files to render. Disadvantage: Forgets it has permissions between sessions - a deliberate security conscious design decision by the internet people of yore.</p>
-</section>
-<section id="the-editor-notepad.-huh" class="level3">
-<h3 class="anchored" data-anchor-id="the-editor-notepad.-huh">The editor: Notepad. Huh</h3>
-<p>I realised as I was building this that I didn’t need a bespoke editor if I was just using local files, while syntax highlighting would have been nice, Notepad is perfectly capable of writing markdown, and is relatively minimal if you ignore the copilot button someone jammed in there against my will.</p>
-</section>
-<section id="viewer.html" class="level3">
-<h3 class="anchored" data-anchor-id="viewer.html">viewer.html</h3>
-<p>I asked Gemini to keep everything bar <code>marked.min.js</code> in the same file, to simplify the transplant to my work PC, and sharing it with anyone curious. Thus this file contains all the app’s JS and CSS as well. for that it’s still only 160 lines long (on the first iteration).</p>
+<section id="enable-autostart-of-python-daemon" class="level3">
+<h3 class="anchored" data-anchor-id="enable-autostart-of-python-daemon">Enable autostart of python daemon</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">maestral</span> autostart <span class="at">-Y</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>(Works on OSX, Windows, and any Linux distro using systemd, which is the majority and definitely anything Debian derived).</p>
 </section>
 </section>
-<section id="some-stretch-goalsfeature-creep" class="level2">
-<h2 class="anchored" data-anchor-id="some-stretch-goalsfeature-creep">Some stretch goals/feature creep</h2>
-<p>It’s an excellent MVP, some desirable features are:</p>
-<ol type="1">
-<li>Automatically refreshing the render, so that latest saved changes are viewable without manually clicking the file again (and without the browser returning to the top of the page)</li>
-<li>Dark Mode. Who doesn’t want Dark Mode?</li>
-</ol>
-<p>Both worked! I tested it on this paragraph, it looks from a glance at the code that it’s refreshing every 5s, and only if the file’s actually changed. I requested the light/dark mode be selected by polling the system’s theme on the computer it’s running on, rather than just being a toggle button.</p>
+<section id="writers" class="level2">
+<h2 class="anchored" data-anchor-id="writers">Writers</h2>
+<p>A few options!</p>
+<section id="zettlr---the-full-gui-app" class="level3">
+<h3 class="anchored" data-anchor-id="zettlr---the-full-gui-app"><a href="https://www.zettlr.com/">Zettlr - the full GUI app</a></h3>
+<p>Really good GUI markdown editor. Specifically intended for writing and publication from Markdown, rather than being a generic editor/IDE I’m repurposing. Downside: Uses Electron, so HEAVY. Can be installed after adding apt repo with <code>sudo apt install zettlr</code> as one would expect.</p>
+<p><a href="https://apt.zettlr.com/">Instructions for adding the apt repo thingy, including handy scopy-paste commands, are here</a></p>
+<p>Having now used it for a bit, I’m really quite taken with it when I’m on my Mac, it’s very clean, the file browser on the left is simple as I like. The shortcut for opening that file browser is quite annoying (CMD+! means finger gymnastics to get Shift too). There’s a spell-checker which is occasionally handy (I write enough technical stuff that spellcheckers are perpetually confused). It has a writing focus mode in which only the current paragraph or line is highlighted with everything else greyed out, but that mostly just distracts me as things go in and out of focus. I like things not to move or change unless I tell them to because I’m old and grumpy.</p>
 </section>
-<section id="result" class="level2">
-<h2 class="anchored" data-anchor-id="result">Result</h2>
-<p>It worked first time, every time! In case you missed it in the title, here’s the repo with the code: <a href="https://github.com/MartinChrisWood/really_simple_markdown_viewer">really_simple_markdown_viewer</a></p>
-<p>I’ve tentatively assigned it an MIT license in the hope that Gemini didn’t rip off anything too important. Weird world that I need to type such a sentence. Once the folder picker input is directed to a set of files it happily lingers there, I edit the source file using whatever I like and the viewer catches up in at most five seconds. There’s probably a lot missing, no idea if marked.js can handle any weird maths or whether it handles code blocks for specific languages.</p>
-<p>But it’s sufficient for me to eyeball markdown typed on my potato PC offline and locally, so that’s me sorted.</p>
+<section id="fresh---terminal-editor" class="level3">
+<h3 class="anchored" data-anchor-id="fresh---terminal-editor"><a href="https://getfresh.dev/">Fresh - terminal editor</a></h3>
+<p>I love that this exists. TUI based but with full support for a mouse so that I don’t have to learn weird keyboard shortcuts (navigating my editor has never been the thing that significantly slows my work). That said, it’s nice that I can open and close the file browser with CTRL+B, keeping my working document clear of GUI clutter, which was my main goal. This is meant to be a code editor so abusing it to write documents may seem a little odd, but having a full interface and syntax highlighting in a TUI but with clickable buttons and options is worth it, and by default there’s very little in the way of menus and clutter around the editor window!</p>
+<p>It’s also very nippy, due to not bothering to power a GUI. I stuck it on the dark Dracula theme and never looked back. Install with <code>brew install fresh-editor</code>.</p>
+<p>The only complaint I have is that the last line of the document is (of course) displayed right at the bottom of the screen. This makes sense, but I’m always in my head comparing it to Zettlr, which has some space padded out down there so that you aren’t staring at the absolute lowest part of your laptop screen. It’s a pretty niche complaint really.</p>
 </section>
-<section id="critical-weakness" class="level2">
-<h2 class="anchored" data-anchor-id="critical-weakness">Critical weakness</h2>
-<p>The file browser on the left - it won’t update if files are added or removed, it’s not allowed to scan for new files (see previous comments on security). If I add or remove files, I have to re-mount the folder effectively. This is annoying and involves three button presses, which is three more than I’d like, but workarounds don’t really seem to exist if I want to work with real files on a disk.</p>
+<section id="simple-markdown-an-honourable-mention-for-android" class="level3">
+<h3 class="anchored" data-anchor-id="simple-markdown-an-honourable-mention-for-android"><a href="https://play.google.com/store/apps/details?id=com.wbrawner.simplemarkdown&amp;hl=en-US&amp;pli=1">Simple Markdown</a> (an Honourable Mention for Android)</h3>
+<p>An honorable mention: This is a pretty… simple… markdown editor. All I wanted, this Android app works just fine. The only reason i couldn’t use it was that it didn’t sync with Dropbox. Using it on the Chromebook I could see files in Dropbox, including ones that had been set to available Offline, but clicking “save” for a location in Dropbox while offline would fail. This was really annoying and probably more Google’s fault than the makers of this app.</p>
+</section>
+</section>
+<section id="joplin-for-notes" class="level2">
+<h2 class="anchored" data-anchor-id="joplin-for-notes"><a href="https://joplinapp.org/">Joplin</a> for notes</h2>
+<p>Not really about the writing part, I create a lot of throwaway notes in the process. Joplin is a markdown-based notes app that will sync using Dropbox, so my files stay on the service I want, and I can install it on Android, my Macbook, or just about anything else. This makes it handy mostly for writing down any ideas (writing or work related) as they happen. Because the blog system (Quarto, see below), my writing software and my notes are all Markdown of some flavour, it’s easy for work in one space to evolve into a more complete piece in another, straight copy-paste works fine.</p>
+<p>I hear the cool kids use Obsidian, I’ve not tried it yet :)</p>
+</section>
+<section id="publishing" class="level2">
+<h2 class="anchored" data-anchor-id="publishing">Publishing</h2>
+<p>The blog stuff is handled by <a href="https://quarto.org/">Quarto</a>, turns out it also does books! I have no idea how yet, need to learn.</p>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

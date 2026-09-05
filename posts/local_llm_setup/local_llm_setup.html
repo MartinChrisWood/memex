@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Martin Wood">
-<meta name="dcterms.date" content="2026-06-05">
+<meta name="dcterms.date" content="2026-09-04">
 
-<title>Yet Another Markdown Viewer (for locked down corporate potato PC’s) – memex</title>
+<title>CLI pair coding with local LLM’s with Aider – memex</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -27,6 +27,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -122,9 +157,9 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Yet Another Markdown Viewer (for locked down corporate potato PC’s)</h1>
+      <h1 class="title">CLI pair coding with local LLM’s with Aider</h1>
                                 <div class="quarto-categories">
-                <div class="quarto-category">blather</div>
+                <div class="quarto-category">tutorial</div>
               </div>
                   </div>
   </div>
@@ -142,16 +177,10 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">June 5, 2026</p>
+        <p class="date">September 4, 2026</p>
       </div>
     </div>
     
-      <div>
-      <div class="quarto-title-meta-heading">Modified</div>
-      <div class="quarto-title-meta-contents">
-        <p class="date-modified">June 19, 2026</p>
-      </div>
-    </div>
       
     </div>
     
@@ -167,74 +196,70 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<section id="yet-another-markdown-viewer-for-locked-down-corporate-potato-pcs" class="level1">
-<h1><a href="https://github.com/MartinChrisWood/really_simple_markdown_viewer">Yet Another Markdown Viewer (for locked down corporate potato PC’s)</a></h1>
-<p>Quickly making a markdown editor that’s safe to use in corpo-world PC’s.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="app_screenshot.png" class="img-fluid figure-img"></p>
-<figcaption>A screenshot of the markdown viewer, rendering part of this blog post</figcaption>
-</figure>
-</div>
-<section id="update-and-then-it-became-somewhat-redundant" class="level2">
-<h2 class="anchored" data-anchor-id="update-and-then-it-became-somewhat-redundant">[UPDATE] And then, it became somewhat redundant</h2>
-<p>Turns out somewhat recently, <a href="https://office-watch.com/2026/markdown-editing-onedrive-sharepoint/">Microsoft added a Markdown editor to Sharepoint</a>. It’s still not quite what I need because it needs you to be online to work, and a critical requirement for my apps is “works on a train in a tunnel in the Peak District”, but there you go. One more option :)</p>
+<p>I did this on an M1 Macbook Air running OSX, adapt as you need :)</p>
+<section id="install-ollama-and-get-a-model-that-can-do-code" class="level2">
+<h2 class="anchored" data-anchor-id="install-ollama-and-get-a-model-that-can-do-code">Install Ollama and get a model that can do code</h2>
+<p>I’m just using <a href="https://ollama.com/">Ollama</a> to host and serve open models for other applications. It can do a bit more, like install and set up <a href="https://hermes-agent.ai/">Hermes</a> with your models, for example.</p>
+<p>To install, <a href="https://ollama.com/download/mac">download from their downloads page</a>, or copy and run their script to handle the whole process for you.</p>
+<p>At the command line, type <code>ollama help</code></p>
 </section>
-<section id="an-experiment-in-just-generating-an-app-i-need" class="level2">
-<h2 class="anchored" data-anchor-id="an-experiment-in-just-generating-an-app-i-need">An experiment in just generating an app I need</h2>
-<p>At work, like many, I use a severely locked down corporate laptop on which I can install very little. My software is limited to anything Microsoft will let me have by default (our only browser is Edge). I’d love to be able to draft notes and work in Markdown rather than word (too heavy and manual for quick work) or OneNote (just….ugh. Copy-Paste never does what I need, let alone anything else).</p>
-<p>But since it’s all locked down, I can’t install anything more useful.</p>
-<p>But we still have web browsers, and HTML + CSS + JavaScript I’ve long known is a useful last resort for a dev locked into corporate potato PC’s.</p>
-<p>There are various browser-based editors such as <a href="https://stackedit.io/">StackEdit</a>, which work pretty well and don’t leak data out to the wider internet, running entirely client-side. It’s nice that so many before me had the same thoughts! but a quick bit of experimentation proved I can’t just save them locally from the browser and run them entirely inside an offline laptop (I catch trains through mountains, I need this). I also suspect, but have not confirmed, that our aggressively stanced corporate web browsers would refuse to persist session or site information in such a way that I could not trust these apps to preserve my notes for any length of time. I need the actual markdown files to be down, local, and backed up via the corporate overlord approved OneDrive.</p>
+<section id="install-aider" class="level2">
+<h2 class="anchored" data-anchor-id="install-aider">Install Aider</h2>
+<p>Aider is a CLI tool for LLM powered coding, decribing itself as a CLI AI pair programming tool. It works fairly simply and neatly, called from the command line, within a repo, and creating commit messages for changes. The latter part is why it’s clean; a way to manage all the changes an AI might make is required, and git already exists. I also like that it doesn’t force any particular IDE on to me.</p>
+<p>It is however a python tool and so requires a python environment. I don’t want to have to set the thing up for every project; I want my coding assistant tied to my laptop, not any particular codebase. To install Aider “universally”, I’m using <a href="https://pipx.pypa.io/latest/index.html">pipx</a>, a tool that installs python applications in their own isolated environments.</p>
+<section id="for-convenience-pipx" class="level3">
+<h3 class="anchored" data-anchor-id="for-convenience-pipx">For convenience: pipx</h3>
+<p>To install pipx (assuming homebrew):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install pipx</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Then for Aider, I need python 3.11, the latest that seems to carry all of the dependencies pipx requires:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install python@3.11</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Installing with more recent versions of python gave me errors with setuptools (removed in python 3.14) and numpy (apparently Aider needs an old version).</p>
+<p>I’d bet money there’s ways to get Aider working with more recent versions of python, but since the version supporting Aider is abstracted away by pipx anyway and can’t affect my projects, I don’t care. This works!</p>
 </section>
-<section id="so-i-get-to-enter-the-ai-era" class="level2">
-<h2 class="anchored" data-anchor-id="so-i-get-to-enter-the-ai-era">So I get to enter the “AI Era”</h2>
-<p>Previously, building an entire miniature web app just so that I could properly view markdown files quickly and locally would have been far too much of a faff. I would have carried on with OneNote, and the gentle swearing that ensues each time copy-paste produces a bunch of useless source link info.</p>
-<p>But now we have AI’s to do mundane stuff for us, like coding up a little local web app in a single HTML file that I can then email to myself (because the only easy route for data to make it into a corporate environment is basically email).</p>
-<p>For this project, I didn’t even bother setting up properly for agentic coding, I was working in a coffee shop and my pet LLM is caged inside a chonky gaming desktop at home. For a one-page app, having an argument with Gemini’s chat interface and doing some copy-paste is more than enough.</p>
-</section>
-<section id="whats-in-there" class="level2">
-<h2 class="anchored" data-anchor-id="whats-in-there">What’s in there</h2>
-<section id="the-core-of-it-marked.js-by-christopher-jeffrey-mit-licensed" class="level3">
-<h3 class="anchored" data-anchor-id="the-core-of-it-marked.js-by-christopher-jeffrey-mit-licensed">The core of it: <a href="https://github.com/markedjs/marked">marked.js by Christopher Jeffrey (MIT Licensed)</a></h3>
-<p>The app Gemini gave me has two major components or aspects to it. One of them is the markdown rendering library marked.js, which is essentially doing all the actual work! Kudos to Chris and the 217 collaborators who’ve created this handy little doodad, suspect I’ll find more uses for it as many others have.</p>
-<p>I’ve downloaded a copy of <a href="https://cdn.jsdelivr.net/npm/marked/marked.min.js">marked.min.js</a> to keep with my local app, so that nothing I do with this little app ever touches the internet. People get touchy about the sensitivity of some of the corporate stuff, so better to be able to assert confidently that the internet isn’t involved in any way.</p>
-</section>
-<section id="file-access-folder-input-tag" class="level3">
-<h3 class="anchored" data-anchor-id="file-access-folder-input-tag">File access: Folder input tag</h3>
-<p>The other major requirement is to be able to view and select files on the local hard disk. For obvious security reasons, a HTML page running in a browser isn’t allowed to just access whatever random files on disk it likes.</p>
-<p>Gemini called the folder input tag “old school”, I like base HTML stuff, it will probably still be working a few years later. Advantage: Can easily add a button to select a folder to browse, of files to render. Disadvantage: Forgets it has permissions between sessions - a deliberate security conscious design decision by the internet people of yore.</p>
-</section>
-<section id="the-editor-notepad.-huh" class="level3">
-<h3 class="anchored" data-anchor-id="the-editor-notepad.-huh">The editor: Notepad. Huh</h3>
-<p>I realised as I was building this that I didn’t need a bespoke editor if I was just using local files, while syntax highlighting would have been nice, Notepad is perfectly capable of writing markdown, and is relatively minimal if you ignore the copilot button someone jammed in there against my will.</p>
-</section>
-<section id="viewer.html" class="level3">
-<h3 class="anchored" data-anchor-id="viewer.html">viewer.html</h3>
-<p>I asked Gemini to keep everything bar <code>marked.min.js</code> in the same file, to simplify the transplant to my work PC, and sharing it with anyone curious. Thus this file contains all the app’s JS and CSS as well. for that it’s still only 160 lines long (on the first iteration).</p>
+<section id="installing-aider" class="level3">
+<h3 class="anchored" data-anchor-id="installing-aider">Installing Aider</h3>
+<p>Finally I get to install Aider:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode zsh code-with-copy"><code class="sourceCode zsh"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pipx</span> install <span class="at">--python</span> python3.11 aider-chat</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>You make Ollama available to it using environment variables it knows to watch for:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode zsh code-with-copy"><code class="sourceCode zsh"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">OLLAMA_API_BASE</span><span class="op">=</span>http://127.0.0.1:11434 <span class="co"># local Ollama server endpoint defined</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>And then change the default Ollama context window length to something more reasonable:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode zsh code-with-copy"><code class="sourceCode zsh"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">OLLAMA_CONTEXT_LENGTH</span><span class="op">=</span>8192</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>(Ollama’s default context length is ~2k tokens I think, and truncates silently when you go over that. You can imagine the chaos.)</p>
+<p>And of course I want these to be persistent on my laptop for me. Since I’m a pleb who just uses the Mac’s default zsh shell, I add the export lines to my <code>~/.zshrc</code> file so that they’re run each time I log in.</p>
 </section>
 </section>
-<section id="some-stretch-goalsfeature-creep" class="level2">
-<h2 class="anchored" data-anchor-id="some-stretch-goalsfeature-creep">Some stretch goals/feature creep</h2>
-<p>It’s an excellent MVP, some desirable features are:</p>
-<ol type="1">
-<li>Automatically refreshing the render, so that latest saved changes are viewable without manually clicking the file again (and without the browser returning to the top of the page)</li>
-<li>Dark Mode. Who doesn’t want Dark Mode?</li>
-</ol>
-<p>Both worked! I tested it on this paragraph, it looks from a glance at the code that it’s refreshing every 5s, and only if the file’s actually changed. I requested the light/dark mode be selected by polling the system’s theme on the computer it’s running on, rather than just being a toggle button.</p>
+<section id="run-aider" class="level2">
+<h2 class="anchored" data-anchor-id="run-aider">Run Aider</h2>
+<p>Create a new folder for your project, or cd into one that exists. Start Aider in the terminal using:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode zsh code-with-copy"><code class="sourceCode zsh"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">aider</span> <span class="at">--model</span> ollama_chat/<span class="op">&lt;</span>model<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>I’m using the <code>gemma4:12B</code> model as I write this, it runs on my M1 mac with 16GB ram but it’s slow, almost down to my talking speed, in generating tokens. In future I’m going to set this up with a model running on my desktop on the other side of my office (which can support much larger models, running faster). I’ll also try it out with some smaller models, see what kind of results I get.</p>
+<p>I also need to test with the much larger context windows the Gemma and Qwen models will support.</p>
+<section id="react-to-files" class="level3">
+<h3 class="anchored" data-anchor-id="react-to-files">React to files</h3>
+<p>For full details definitely read <a href="https://aider.chat/docs/usage/watch.html">Aider’s own guidance</a>. If you add the <code>--watch-files</code> flag, Aider will re-read saved files and react to specifically tagged comments in your code.</p>
+<p>For example you could say:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> factorial(n) <span class="co"># Implement this. AI!</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>(this example, again, taken from <a href="https://aider.chat/docs/usage/watch.html">their own guidance pages</a>)</em></p>
+<p>The other magic comment is <code>AI?</code> to ask a question.</p>
+<p>I like this, because I can task the AI with making something in one file, while I go work in another. Matters more for people running local models slowly :P</p>
 </section>
-<section id="result" class="level2">
-<h2 class="anchored" data-anchor-id="result">Result</h2>
-<p>It worked first time, every time! In case you missed it in the title, here’s the repo with the code: <a href="https://github.com/MartinChrisWood/really_simple_markdown_viewer">really_simple_markdown_viewer</a></p>
-<p>I’ve tentatively assigned it an MIT license in the hope that Gemini didn’t rip off anything too important. Weird world that I need to type such a sentence. Once the folder picker input is directed to a set of files it happily lingers there, I edit the source file using whatever I like and the viewer catches up in at most five seconds. There’s probably a lot missing, no idea if marked.js can handle any weird maths or whether it handles code blocks for specific languages.</p>
-<p>But it’s sufficient for me to eyeball markdown typed on my potato PC offline and locally, so that’s me sorted.</p>
 </section>
-<section id="critical-weakness" class="level2">
-<h2 class="anchored" data-anchor-id="critical-weakness">Critical weakness</h2>
-<p>The file browser on the left - it won’t update if files are added or removed, it’s not allowed to scan for new files (see previous comments on security). If I add or remove files, I have to re-mount the folder effectively. This is annoying and involves three button presses, which is three more than I’d like, but workarounds don’t really seem to exist if I want to work with real files on a disk.</p>
+<section id="so-the-command-i-actually-run-to-start-it-is" class="level2">
+<h2 class="anchored" data-anchor-id="so-the-command-i-actually-run-to-start-it-is">So the command I actually run to start it is:</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode zsh code-with-copy"><code class="sourceCode zsh"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">aider</span> <span class="at">--model</span> ollama_chat/gemma4:12B <span class="at">--watch-files</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>And I’d like to make this easy to do, so I’m adding an aliased command to my <code>~/.zshrc</code> like so:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode zsh code-with-copy"><code class="sourceCode zsh"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">alias</span> gemma=<span class="st">'aider --model ollama_chat/gemma4:12B --watch-files --notifications'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>That last additional flag, for notifications, enables notifications when Aider needs my input, figure it’ll be useful if I need to leave it running for a bit on longer jobs.</p>
+</section>
+<section id="things-i-will-do-later" class="level2">
+<h2 class="anchored" data-anchor-id="things-i-will-do-later">Things I will do later</h2>
+<ul>
+<li>Try this with larger models (hosted on my desktop across the office, I should be able to do this just by changing the IP address provided for Ollama)</li>
+<li>Fix the context window size to something larger (even my current model has a much larger context window than 8k tokens, but the question is how much context my laptop’s RAM can handle :P )</li>
+<li>Start adding more instructions on python docstring style etc (There’s <a href="https://aider.chat/docs/usage/conventions.html">guidance in Aider’s docs</a>, looks like I just write instructions in a markdown file and add a flag that Aider’s to read it)</li>
+</ul>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
